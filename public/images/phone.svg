@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="24" fill="#f1f5f9"/>
+  <!-- Phone body -->
+  <rect x="130" y="60" width="140" height="280" rx="24" fill="#0f172a" stroke="#334155" stroke-width="4"/>
+  <!-- Screen -->
+  <rect x="140" y="80" width="120" height="240" rx="14" fill="url(#bg)"/>
+  <!-- Speaker notch -->
+  <rect x="175" y="68" width="50" height="5" rx="2.5" fill="#64748b"/>
+  <!-- Screen elements -->
+  <circle cx="200" cy="150" r="30" fill="white" opacity="0.2"/>
+  <rect x="160" y="200" width="80" height="10" rx="5" fill="white" opacity="0.8"/>
+  <rect x="170" y="220" width="60" height="8" rx="4" fill="white" opacity="0.6"/>
+  <!-- Home indicator -->
+  <rect x="170" y="310" width="60" height="4" rx="2" fill="#ffffff" opacity="0.7"/>
+</svg>

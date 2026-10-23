@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="hpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Headband -->
+  <path d="M 100 220 A 110 110 0 0 1 300 220" fill="none" stroke="#334155" stroke-width="20" stroke-linecap="round"/>
+  <path d="M 120 180 A 90 90 0 0 1 280 180" fill="none" stroke="url(#hpGrad)" stroke-width="8" stroke-linecap="round"/>
+  <!-- Ear cups -->
+  <rect x="80" y="200" width="45" height="90" rx="22" fill="#1e293b"/>
+  <rect x="275" y="200" width="45" height="90" rx="22" fill="#1e293b"/>
+  <!-- Cushions -->
+  <rect x="105" y="210" width="22" height="70" rx="11" fill="url(#hpGrad)"/>
+  <rect x="273" y="210" width="22" height="70" rx="11" fill="url(#hpGrad)"/>
+</svg>

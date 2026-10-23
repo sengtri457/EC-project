@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shoeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sole -->
+  <path d="M 60 270 C 120 285 280 285 340 260 C 350 256 350 275 330 285 C 270 305 110 305 60 285 Z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="3"/>
+  <!-- Upper body -->
+  <path d="M 70 270 C 80 210 130 180 170 190 C 200 160 230 140 260 170 C 290 190 320 230 340 260 C 270 275 140 275 70 270 Z" fill="url(#shoeGrad)"/>
+  <!-- Ankle collar -->
+  <path d="M 170 190 C 180 160 210 150 240 160" stroke="#ffffff" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <!-- Laces -->
+  <line x1="210" y1="180" x2="235" y2="195" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <line x1="225" y1="200" x2="250" y2="215" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <!-- Swoosh-style swoosh -->
+  <path d="M 140 240 Q 220 220 290 235 Q 220 255 140 240" fill="#ffffff" opacity="0.9"/>
+</svg>

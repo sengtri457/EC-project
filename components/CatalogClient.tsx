@@ -1,0 +1,134 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { Product, Audience, Department, Subcategory } from "@/types";
+import CatalogFilterDrawer from "./CatalogFilterDrawer";
+import ProductCard from "./ProductCard";
+
+interface CatalogClientProps {
+  initialProducts: Product[];
+}
+
+export default function CatalogClient({ initialProducts }: CatalogClientProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedAudience, setSelectedAudience] = useState<Audience>("all");
+  const [selectedDepartment, setSelectedDepartment] = useState<Department>("all");
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>("all");
+  const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
+
+  const filteredAndSortedProducts = useMemo(() => {
+    const filtered = initialProducts.filter((product) => {
+      // 1. Search Query Filter
+      const query = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !query ||
+        product.title.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        (product.category && product.category.toLowerCase().includes(query)) ||
+        (product.fabric && product.fabric.toLowerCase().includes(query)) ||
+        (product.subcategory && product.subcategory.toLowerCase().includes(query));
+
+      // 2. Audience Filter (Level 1)
+      const matchesAudience =
+        selectedAudience === "all" ||
+        product.audience === selectedAudience ||
+        product.audience === "unisex";
+
+      // 3. Department Filter (Level 2)
+      const matchesDepartment =
+        selectedDepartment === "all" || product.department === selectedDepartment;
+
+      // 4. Subcategory Filter (Level 3)
+      const matchesSubcategory =
+        selectedSubcategory === "all" || product.subcategory === selectedSubcategory;
+
+      return matchesSearch && matchesAudience && matchesDepartment && matchesSubcategory;
+    });
+
+    return filtered.sort((a, b) => {
+      if (sortBy === "price-asc") return a.price - b.price;
+      if (sortBy === "price-desc") return b.price - a.price;
+      return a.id - b.id;
+    });
+  }, [
+    initialProducts,
+    searchQuery,
+    selectedAudience,
+    selectedDepartment,
+    selectedSubcategory,
+    sortBy,
+  ]);
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedAudience("all");
+    setSelectedDepartment("all");
+    setSelectedSubcategory("all");
+    setSortBy("featured");
+  };
+
+  return (
+    <section id="catalog" className="bg-backdrop px-[clamp(1rem,4vw,3.5rem)] py-16 border-t border-ink/20">
+      {/* Centered Editorial Max-Width Container */}
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b-2 border-ink pb-6">
+          <div>
+            <span className="type-label text-xs uppercase tracking-widest text-ink-soft block">
+              Lookbook Archive
+            </span>
+            <h2 className="type-display mt-2 text-2xl sm:text-3xl lg:text-4xl text-ink">
+              Full Store Catalog
+            </h2>
+            <p className="mt-1.5 text-xs sm:text-sm text-ink-soft max-w-lg">
+              Explore statement silhouettes across knitwear, tailoring, outerwear, and footwear.
+            </p>
+          </div>
+
+          <div className="text-xs font-mono text-ink-soft shrink-0">
+            Displaying <span className="font-bold text-ink">{filteredAndSortedProducts.length}</span> of{" "}
+            {initialProducts.length} items
+          </div>
+        </div>
+
+        {/* Option 2: Interactive Capsule Slide-Over Drawer */}
+        <CatalogFilterDrawer
+          selectedAudience={selectedAudience}
+          onSelectAudience={setSelectedAudience}
+          selectedDepartment={selectedDepartment}
+          onSelectDepartment={setSelectedDepartment}
+          selectedSubcategory={selectedSubcategory}
+          onSelectSubcategory={setSelectedSubcategory}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          filteredCount={filteredAndSortedProducts.length}
+          totalCount={initialProducts.length}
+          onReset={handleResetFilters}
+        />
+
+        {/* 3-Column Architectural Hairline Lookbook Grid (2-cols on mobile for tight balance) */}
+        <div className="mt-8 border-t border-l border-ink/20 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3">
+          {filteredAndSortedProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
+        {filteredAndSortedProducts.length === 0 && (
+          <div className="py-20 text-center border border-ink/20 bg-paper/40 mt-8">
+            <p className="type-display text-lg text-ink">No matching silhouettes found</p>
+            <p className="text-xs text-ink-soft mt-1 font-mono">
+              No items match your filter criteria.
+            </p>
+            <button
+              onClick={handleResetFilters}
+              className="type-label mt-5 px-5 py-2.5 bg-ink text-paper text-xs uppercase tracking-widest hover:bg-ink-soft transition-colors"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
