@@ -131,8 +131,8 @@ export default function CheckoutPage() {
         {/* Form Column */}
         <form onSubmit={handleSubmit} className="space-y-6 lg:col-span-7">
           {/* Customer & Address Details */}
-          <div className="border border-ink/20 bg-paper/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center justify-between border-b border-ink/15 pb-3">
+          <div className="border border-border bg-paper p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <h2 className="type-label text-sm uppercase tracking-widest text-ink font-bold">
                 01. Delivery Coordinates
               </h2>
@@ -157,10 +157,10 @@ export default function CheckoutPage() {
                   onChange={(e) => handleChange("name", e.target.value)}
                   onBlur={() => handleBlur("name")}
                   placeholder="e.g. Alex Mercer"
-                  className={`mt-1.5 w-full border bg-backdrop/40 px-3.5 py-3 font-mono text-xs text-ink placeholder-ink/40 focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
+                  className={`mt-1.5 w-full border bg-backdrop/60 px-3.5 py-3 font-mono text-xs text-ink placeholder:text-placeholder focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
                     touched.name && errors.name
                       ? "border-ctrl-red focus:border-ctrl-red"
-                      : "border-ink/25 focus:border-ink"
+                      : "border-border-strong focus:border-ink"
                   }`}
                 />
                 {touched.name && errors.name && (
@@ -183,10 +183,10 @@ export default function CheckoutPage() {
                   onChange={(e) => handleChange("email", e.target.value)}
                   onBlur={() => handleBlur("email")}
                   placeholder="alex.mercer@atelier.com"
-                  className={`mt-1.5 w-full border bg-backdrop/40 px-3.5 py-3 font-mono text-xs text-ink placeholder-ink/40 focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
+                  className={`mt-1.5 w-full border bg-backdrop/60 px-3.5 py-3 font-mono text-xs text-ink placeholder:text-placeholder focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
                     touched.email && errors.email
                       ? "border-ctrl-red focus:border-ctrl-red"
-                      : "border-ink/25 focus:border-ink"
+                      : "border-border-strong focus:border-ink"
                   }`}
                 />
                 {touched.email && errors.email && (
@@ -209,10 +209,10 @@ export default function CheckoutPage() {
                   onChange={(e) => handleChange("phone", e.target.value)}
                   onBlur={() => handleBlur("phone")}
                   placeholder="e.g. +1 555 019 2834"
-                  className={`mt-1.5 w-full border bg-backdrop/40 px-3.5 py-3 font-mono text-xs text-ink placeholder-ink/40 focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
+                  className={`mt-1.5 w-full border bg-backdrop/60 px-3.5 py-3 font-mono text-xs text-ink placeholder:text-placeholder focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
                     touched.phone && errors.phone
                       ? "border-ctrl-red focus:border-ctrl-red"
-                      : "border-ink/25 focus:border-ink"
+                      : "border-border-strong focus:border-ink"
                   }`}
                 />
                 {touched.phone && errors.phone && (
@@ -235,10 +235,10 @@ export default function CheckoutPage() {
                   onChange={(e) => handleChange("address", e.target.value)}
                   onBlur={() => handleBlur("address")}
                   placeholder="404 Industrial Blvd, Studio Suite 12B, Brooklyn, NY 11201"
-                  className={`mt-1.5 w-full border bg-backdrop/40 px-3.5 py-3 font-mono text-xs text-ink placeholder-ink/40 focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
+                  className={`mt-1.5 w-full border bg-backdrop/60 px-3.5 py-3 font-mono text-xs text-ink placeholder:text-placeholder focus:border-ink focus:bg-paper focus:outline-none transition-colors ${
                     touched.address && errors.address
                       ? "border-ctrl-red focus:border-ctrl-red"
-                      : "border-ink/25 focus:border-ink"
+                      : "border-border-strong focus:border-ink"
                   }`}
                 />
                 {touched.address && errors.address && (
@@ -249,12 +249,12 @@ export default function CheckoutPage() {
           </div>
 
           {/* Payment Terms */}
-          <div className="border border-ink/20 bg-paper/70 p-6 sm:p-8 backdrop-blur-sm shadow-sm">
-            <h2 className="type-label text-sm uppercase tracking-widest text-ink font-bold border-b border-ink/15 pb-3">
+          <div className="border border-border bg-paper p-6 sm:p-8 shadow-sm">
+            <h2 className="type-label text-sm uppercase tracking-widest text-ink font-bold border-b border-border pb-3">
               02. Settlement Terms
             </h2>
 
-            <div className="mt-4 flex items-center justify-between border-2 border-ink bg-backdrop/60 p-4">
+            <div className="mt-4 flex items-center justify-between border-2 border-ink bg-backdrop p-4">
               <div className="flex items-center gap-3.5">
                 <div className="flex h-4 w-4 items-center justify-center border-2 border-ink">
                   <div className="h-2 w-2 bg-ctrl-red" />
@@ -296,8 +296,8 @@ export default function CheckoutPage() {
 
         {/* Sidebar Order Review */}
         <div className="lg:col-span-5">
-          <div className="sticky top-24 space-y-4 border border-ink/20 bg-paper/70 p-6 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center justify-between border-b border-ink/15 pb-3">
+          <div className="sticky top-24 space-y-4 border border-border bg-paper p-6 shadow-sm">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <h2 className="type-label text-xs uppercase tracking-widest text-ink font-bold">
                 Order Review
               </h2>
@@ -306,10 +306,10 @@ export default function CheckoutPage() {
               </span>
             </div>
 
-            <div className="max-h-80 divide-y divide-ink/10 overflow-y-auto pr-1">
+            <div className="max-h-80 divide-y divide-border overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.productId} className="flex items-center gap-3.5 py-3">
-                  <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-ink/15 bg-white p-1">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-border bg-backdrop p-1">
                     <Image
                       src={item.thumbnail}
                       alt={item.title}

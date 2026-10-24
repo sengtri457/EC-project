@@ -50,7 +50,7 @@ export function buildInvoiceHtml(order: Order): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Receipt ${safeOrderId} — CTRL Studio</title>
+  <title>Invoice ${safeOrderId} — Clothes™ Apparel Co.</title>
   <style>
     * {
       box-sizing: border-box;
@@ -59,8 +59,8 @@ export function buildInvoiceHtml(order: Order): string {
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: #f4f3ef;
-      color: #0a0a0a;
+      background-color: #fafaf8;
+      color: #1a1a1a;
       padding: 48px 20px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
@@ -68,34 +68,34 @@ export function buildInvoiceHtml(order: Order): string {
     .invoice-card {
       max-width: 800px;
       margin: 0 auto;
-      background: #faf9f5;
-      border: 2px solid #0a0a0a;
+      background: #ffffff;
+      border: 1px solid #e6e6e2;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
     .header-bar {
       padding: 36px 36px 28px 36px;
-      border-bottom: 2px solid #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 20px;
-      background: #0a0a0a;
-      color: #faf9f5;
+      background: #1a1a1a;
+      color: #fafaf8;
     }
     .brand-logo {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: #ffffff;
       line-height: 1;
+      font-family: Georgia, 'Playfair Display', serif;
     }
     .brand-tag {
-      font-size: 10px;
+      font-size: 11px;
       color: #d4d4d4;
       margin-top: 6px;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       font-family: monospace;
     }
@@ -105,10 +105,10 @@ export function buildInvoiceHtml(order: Order): string {
     .status-badge {
       display: inline-block;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: #ff2d20;
+      letter-spacing: 0.08em;
+      background: #a35c49;
       color: #ffffff;
       padding: 5px 12px;
       font-family: monospace;
@@ -136,20 +136,20 @@ export function buildInvoiceHtml(order: Order): string {
       gap: 28px;
       margin-bottom: 32px;
       padding-bottom: 28px;
-      border-bottom: 1px dashed #0a0a0a;
+      border-bottom: 1px dashed #e6e6e2;
     }
     .meta-block h4 {
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       color: #737373;
       margin-bottom: 8px;
       font-family: monospace;
     }
     .meta-block p {
       font-size: 13px;
-      color: #0a0a0a;
+      color: #1a1a1a;
       line-height: 1.6;
     }
     table {
@@ -161,12 +161,12 @@ export function buildInvoiceHtml(order: Order): string {
       padding: 12px 16px;
       text-align: left;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #0a0a0a;
-      border-bottom: 2px solid #0a0a0a;
-      background: #eae9e3;
+      letter-spacing: 0.08em;
+      color: #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+      background: #f4f4f0;
       font-family: monospace;
     }
     th:nth-child(2) {
@@ -191,18 +191,18 @@ export function buildInvoiceHtml(order: Order): string {
       font-family: monospace;
     }
     .summary-row.total {
-      border-top: 2px solid #0a0a0a;
+      border-top: 2px solid #1a1a1a;
       margin-top: 8px;
       padding-top: 12px;
       font-size: 16px;
-      font-weight: 900;
-      color: #0a0a0a;
+      font-weight: 700;
+      color: #1a1a1a;
     }
     .stamp-container {
       margin-top: 28px;
       padding: 16px;
-      border: 1px solid #d4d4d4;
-      background: #ffffff;
+      border: 1px solid #e6e6e2;
+      background: #f4f4f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -215,17 +215,17 @@ export function buildInvoiceHtml(order: Order): string {
     .stamp-badge {
       font-family: monospace;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       text-transform: uppercase;
-      color: #0a0a0a;
-      border: 1px dashed #0a0a0a;
+      color: #2b5b3c;
+      border: 1px solid #2b5b3c;
       padding: 4px 8px;
       letter-spacing: 0.08em;
     }
     .footer-note {
       padding: 20px 36px;
-      background: #eae9e3;
-      border-top: 1px solid #d4d4d4;
+      background: #f4f4f0;
+      border-top: 1px solid #e6e6e2;
       text-align: center;
       font-size: 11px;
       font-family: monospace;
@@ -247,8 +247,8 @@ export function buildInvoiceHtml(order: Order): string {
   <div class="invoice-card">
     <div class="header-bar">
       <div>
-        <div class="brand-logo">CTRL — THE NEW ERA</div>
-        <div class="brand-tag">Studio Dispatch Slip · Official Archive Release</div>
+        <div class="brand-logo">CLOTHES™</div>
+        <div class="brand-tag">Clothes™ Apparel Co. · Accessible Conscious Luxury</div>
       </div>
       <div class="order-status">
         <span class="status-badge">Cash on Delivery</span>
@@ -267,21 +267,21 @@ export function buildInvoiceHtml(order: Order): string {
         </div>
 
         <div class="meta-block">
-          <h4>Dispatch Destination</h4>
+          <h4>Delivery Address</h4>
           <p style="white-space: pre-line;">${safeAddress}</p>
         </div>
 
         <div class="meta-block">
-          <h4>Courier Terms</h4>
-          <p>White-Glove Doorstep Delivery</p>
-          <p>Inspect garments before payment handoff</p>
+          <h4>Customer Care &amp; Terms</h4>
+          <p>Doorstep Inspection Permitted</p>
+          <p>Concierge: concierge@clothes.com</p>
         </div>
       </div>
 
       <table>
         <thead>
           <tr>
-            <th>Silhouette / Item</th>
+            <th>Garment / Silhouette</th>
             <th>Qty</th>
             <th>Unit Price</th>
             <th>Total</th>
@@ -303,8 +303,8 @@ export function buildInvoiceHtml(order: Order): string {
             <span>$${order.tax.toFixed(2)}</span>
           </div>
           <div class="summary-row">
-            <span>Insured Courier Dispatch</span>
-            <span style="color: #0a0a0a; font-weight: 700;">FREE</span>
+            <span>Standard Insured Shipping</span>
+            <span style="color: #2b5b3c; font-weight: 700;">FREE</span>
           </div>
           <div class="summary-row total">
             <span>Total Payable</span>
@@ -315,16 +315,16 @@ export function buildInvoiceHtml(order: Order): string {
 
       <div class="stamp-container">
         <div class="stamp-text">
-          AUTHENTICATED RECORD // CTRL ATELIER AUTUMN/WINTER EDITION
+          AUTHENTICATED RECORD // CLOTHES™ MINIMALISM IN EVERYDAY WEAR
         </div>
         <div class="stamp-badge">
-          CERTIFIED DISPATCH
+          VERIFIED ORDER
         </div>
       </div>
     </div>
 
     <div class="footer-note">
-      This is an offline acquisition receipt generated by CTRL Studio. Present this slip upon courier delivery.
+      Thank you for choosing Clothes™ Apparel Co. For assistance, contact concierge@clothes.com. 30-day returns accepted.
     </div>
   </div>
 </body>
