@@ -45,7 +45,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
       <div className="mx-auto flex min-h-[50vh] max-w-4xl items-center justify-center px-4 py-16">
         <div className="flex flex-col items-center gap-3 text-ink-soft">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink border-t-transparent" />
-          <p className="text-xs font-mono uppercase tracking-wider">Retrieving acquisition slip...</p>
+          <p className="text-xs font-mono uppercase tracking-wider">Retrieving order invoice...</p>
         </div>
       </div>
     );
@@ -54,15 +54,15 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
   if (!order) {
     return (
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <div className="border border-ink/20 bg-paper/60 p-10 shadow-sm">
+        <div className="border border-border bg-paper p-10 shadow-sm">
           <span className="type-label text-xs uppercase tracking-widest text-ctrl-red">
-            Slip Not Found
+            Invoice Not Found
           </span>
-          <h1 className="type-display mt-3 text-2xl font-black tracking-tight text-ink">
-            Reference &ldquo;{orderId}&rdquo; Not In Local Registry
+          <h1 className="type-display mt-3 text-2xl font-bold tracking-tight text-ink">
+            Order Reference &ldquo;{orderId}&rdquo; Not Found
           </h1>
           <p className="mt-2 text-xs leading-relaxed text-ink-soft font-mono max-w-sm mx-auto">
-            Orders are committed to local client memory. If you cleared your browser storage or opened a new private tab, the slip may not be loaded.
+            Orders are committed to local client memory. If you cleared your browser storage or opened a new private session, the invoice may not be accessible.
           </p>
           <div className="mt-6 flex items-center justify-center gap-4">
             <Link
@@ -70,7 +70,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
               className="type-label inline-flex items-center gap-2 bg-ink px-6 py-3 text-xs uppercase tracking-widest text-paper hover:bg-ink-soft transition-colors"
             >
               <span>Return to Catalog</span>
-              <span aria-hidden="true">→</span>
+              <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </div>
@@ -87,23 +87,23 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
   });
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       {/* 3-Step Checkout Stepper */}
       <OrderStepper currentStep={3} />
 
       {/* Confirmation Banner */}
-      <div className="mb-6 border border-border bg-paper p-5 shadow-sm">
+      <div className="mb-6 border border-border bg-paper p-4 sm:p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-ctrl-red text-white text-xs font-mono font-bold">
+          <div className="flex items-center gap-3">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sage/10 text-sage text-xs font-mono font-bold">
               ✓
             </div>
             <div>
-              <h2 className="type-label text-xs uppercase tracking-widest text-ink font-bold">
-                Acquisition Slip Recorded
+              <h2 className="type-label text-xs uppercase tracking-wider text-ink font-semibold">
+                Order Confirmed
               </h2>
               <p className="font-mono text-xs text-ink-soft mt-0.5">
-                Cash payment of <strong className="text-ink">${order.total.toFixed(2)} USD</strong> is due upon doorstep inspection.
+                Cash payment of <strong className="text-ink font-semibold">${order.total.toFixed(2)} USD</strong> is due upon doorstep delivery.
               </p>
             </div>
           </div>
@@ -112,14 +112,14 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
             <button
               type="button"
               onClick={() => window.print()}
-              className="type-label inline-flex items-center justify-center border border-border-strong px-3 py-2 text-xs uppercase tracking-widest text-ink hover:border-ink hover:bg-backdrop transition-colors cursor-pointer"
+              className="type-label inline-flex items-center justify-center border border-border px-3.5 py-1.5 text-xs uppercase tracking-wider text-ink hover:border-ink hover:bg-canvas transition-colors cursor-pointer"
             >
               Print
             </button>
             <button
               type="button"
               onClick={() => downloadInvoice(order)}
-              className="type-label inline-flex items-center justify-center gap-2 bg-ink px-4 py-2 text-xs uppercase tracking-widest text-paper hover:bg-ink-soft transition-colors cursor-pointer"
+              className="type-label inline-flex items-center justify-center gap-2 bg-ink px-4 py-1.5 text-xs uppercase tracking-wider text-paper hover:bg-ink-soft transition-colors cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -135,97 +135,115 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 />
               </svg>
-              <span>Download Invoice (.html)</span>
+              <span>Download (.html)</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Authentic Studio Receipt Card */}
-      <div className="border border-border bg-paper shadow-md">
-        {/* Receipt Header */}
-        <div className="border-b border-border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 bg-ink text-paper">
-          <div className="flex items-start gap-4">
-            <div className="relative h-11 w-14 shrink-0 mt-0.5">
+      {/* Clean Minimal Luxury Invoice Card */}
+      <div className="border border-border bg-paper shadow-sm">
+        {/* Refined Minimalist Header */}
+        <div className="border-b border-border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 bg-canvas/40">
+          <div className="flex items-center gap-3.5">
+            <div className="relative h-8 w-10 shrink-0">
               <Image
                 src="/images/logoDevs.png"
                 alt="Clothes™ Logo"
                 fill
-                sizes="56px"
-                className="object-contain brightness-0 invert"
+                sizes="40px"
+                className="object-contain"
               />
             </div>
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-paper/70">
-                Official Order &amp; Delivery Invoice
-              </span>
-              <h1 className="type-display mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-paper">
-                Clothes™ Apparel Co.
-              </h1>
-              <p className="font-mono text-[11px] text-paper/60 mt-0.5">
-                Accessible Conscious Luxury · Autumn Capsule
+              <div className="flex items-baseline gap-2">
+                <span className="type-display text-lg font-medium tracking-tight text-ink">
+                  Clothes<span className="text-xs align-super font-sans text-ink-soft">™</span>
+                </span>
+                <span className="text-[11px] font-mono tracking-wider text-ink-soft uppercase">
+                  Apparel Co.
+                </span>
+              </div>
+              <p className="text-[11px] text-ink-soft tracking-wide mt-0.5">
+                Accessible Conscious Luxury · Official Order Invoice
               </p>
             </div>
           </div>
-          <div className="text-left sm:text-right">
-            <span className="inline-block bg-ctrl-red text-white px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-widest">
+
+          <div className="flex flex-col sm:items-end text-left sm:text-right">
+            <span className="inline-flex items-center rounded border border-terracotta/30 bg-terracotta/5 px-2 py-0.5 text-[10px] font-mono font-medium text-terracotta uppercase tracking-wider">
               Cash on Delivery
             </span>
-            <p className="mt-2 font-mono text-xs font-bold text-paper">
+            <p className="mt-1.5 font-mono text-xs font-semibold text-ink">
               {order.id}
             </p>
-            <p className="font-mono text-[11px] text-paper/60">{formattedDate}</p>
+            <p className="font-mono text-[11px] text-ink-soft">{formattedDate}</p>
           </div>
         </div>
 
-        {/* Details Grid */}
-        <div className="p-6 sm:p-8 space-y-8">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 border border-border bg-backdrop p-5">
+        {/* Details Grid - Clean & Minimal */}
+        <div className="p-6 sm:p-8 space-y-7">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 border-b border-border pb-6">
             <div>
-              <h3 className="type-label text-[10px] uppercase tracking-widest text-ink-soft">
+              <h3 className="text-[10px] font-mono uppercase tracking-widest text-ink-soft">
                 Billed To
               </h3>
-              <p className="mt-2 text-xs font-bold text-ink">
+              <p className="mt-2 text-xs font-medium text-ink">
                 {order.customer.name}
               </p>
-              <p className="font-mono text-xs text-ink-soft mt-0.5">{order.customer.email}</p>
-              <p className="font-mono text-xs text-ink-soft mt-0.5">{order.customer.phone}</p>
+              <p className="text-xs text-ink-soft mt-0.5">{order.customer.email}</p>
+              <p className="text-xs font-mono text-ink-soft mt-0.5">{order.customer.phone}</p>
             </div>
 
             <div>
-              <h3 className="type-label text-[10px] uppercase tracking-widest text-ink-soft">
+              <h3 className="text-[10px] font-mono uppercase tracking-widest text-ink-soft">
                 Dispatch Destination
               </h3>
-              <p className="mt-2 text-xs font-mono text-ink leading-relaxed whitespace-pre-line">
+              <p className="mt-2 text-xs text-ink leading-relaxed whitespace-pre-line">
                 {order.customer.address}
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-[10px] font-mono uppercase tracking-widest text-ink-soft">
+                Delivery &amp; Care
+              </h3>
+              <p className="mt-2 text-xs text-ink">
+                Doorstep Inspection Permitted
+              </p>
+              <p className="text-xs text-ink-soft mt-0.5">
+                Concierge: concierge@clothes.com
+              </p>
+              <p className="text-[11px] text-sage font-medium mt-1">
+                30-Day Hassle-Free Returns
               </p>
             </div>
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto border-t border-b border-border">
+          <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-border bg-backdrop font-mono text-[10px] font-bold uppercase tracking-wider text-ink">
+              <thead className="border-b border-border font-mono text-[10px] font-medium uppercase tracking-wider text-ink-soft">
                 <tr>
-                  <th className="py-3 px-3">Silhouette / Item</th>
-                  <th className="py-3 px-3 text-center">Qty</th>
-                  <th className="py-3 px-3 text-right">Unit Price</th>
-                  <th className="py-3 px-3 text-right">Total</th>
+                  <th className="py-2.5 px-3">Item / Silhouette</th>
+                  <th className="py-2.5 px-3 text-center">Qty</th>
+                  <th className="py-2.5 px-3 text-right">Unit Price</th>
+                  <th className="py-2.5 px-3 text-right">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border font-mono">
+              <tbody className="divide-y divide-border">
                 {order.items.map((item) => (
-                  <tr key={item.productId}>
-                    <td className="py-3.5 px-3 font-semibold text-ink font-sans">
+                  <tr key={item.productId} className="hover:bg-canvas/30 transition-colors">
+                    <td className="py-3 px-3 font-medium text-ink font-sans">
                       {item.title}
                     </td>
-                    <td className="py-3.5 px-3 text-center text-ink-soft">
+                    <td className="py-3 px-3 text-center text-ink-soft font-mono">
                       {item.quantity}
                     </td>
-                    <td className="py-3.5 px-3 text-right text-ink-soft">
+                    <td className="py-3 px-3 text-right text-ink-soft font-mono">
                       ${item.price.toFixed(2)}
                     </td>
-                    <td className="py-3.5 px-3 text-right font-bold text-ink">
+                    <td className="py-3 px-3 text-right font-medium text-ink font-mono">
                       ${(item.price * item.quantity).toFixed(2)}
                     </td>
                   </tr>
@@ -234,36 +252,36 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
             </table>
           </div>
 
-          {/* Totals */}
-          <div className="flex justify-end pt-2">
+          {/* Totals Breakdown */}
+          <div className="flex justify-end pt-1">
             <div className="w-full max-w-xs space-y-2 text-xs font-mono">
               <div className="flex justify-between text-ink-soft">
                 <span>Subtotal</span>
-                <span className="font-semibold text-ink">${order.subtotal.toFixed(2)}</span>
+                <span className="font-medium text-ink">${order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>Sales Tax (8%)</span>
-                <span className="font-semibold text-ink">${order.tax.toFixed(2)}</span>
+                <span>Estimated Sales Tax (8%)</span>
+                <span className="font-medium text-ink">${order.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-ink-soft">
-                <span>Insured Courier Dispatch</span>
-                <span className="font-bold text-ink uppercase text-[10px]">FREE</span>
+                <span>Standard Shipping</span>
+                <span className="font-medium text-sage uppercase text-[10px]">FREE</span>
               </div>
-              <div className="flex justify-between border-t-2 border-ink pt-3 text-sm">
-                <span className="type-label font-bold text-ink">Total Amount Due</span>
-                <span className="font-mono text-base font-black text-ink">${order.total.toFixed(2)} USD</span>
+              <div className="flex justify-between border-t border-border pt-3 text-sm">
+                <span className="font-medium text-ink font-sans">Total Payable</span>
+                <span className="font-mono text-base font-semibold text-ink">${order.total.toFixed(2)} USD</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Action Bottom */}
-        <div className="border-t border-border bg-backdrop/60 p-5 flex items-center justify-between flex-wrap gap-4">
+        <div className="border-t border-border bg-canvas/30 p-4 sm:p-5 flex items-center justify-between flex-wrap gap-4">
           <Link
             href="/"
             className="type-label inline-flex items-center gap-1.5 text-xs text-ink-soft hover:text-ink transition-colors"
           >
-            <span aria-hidden="true">←</span>
+            <span aria-hidden="true">&larr;</span>
             <span>Return to Catalog</span>
           </Link>
 
@@ -271,7 +289,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
             <button
               type="button"
               onClick={() => downloadInvoice(order)}
-              className="type-label inline-flex items-center gap-2 bg-ink px-5 py-2.5 text-xs uppercase tracking-widest text-paper hover:bg-ink-soft transition-colors cursor-pointer"
+              className="type-label inline-flex items-center gap-2 bg-ink px-4 py-2 text-xs uppercase tracking-wider text-paper hover:bg-ink-soft transition-colors cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -28,16 +28,16 @@ export function buildInvoiceHtml(order: Order): string {
     .map(
       (item) => `
       <tr>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; font-weight: 600; color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+        <td style="padding: 12px 14px; border-bottom: 1px solid #ececec; font-size: 13px; font-weight: 500; color: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
           ${escapeHtml(item.title)}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: center; color: #525252; font-family: monospace;">
+        <td style="padding: 12px 14px; border-bottom: 1px solid #ececec; font-size: 12px; text-align: center; color: #6b7280; font-family: monospace;">
           ${item.quantity}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: right; color: #525252; font-family: monospace;">
+        <td style="padding: 12px 14px; border-bottom: 1px solid #ececec; font-size: 12px; text-align: right; color: #6b7280; font-family: monospace;">
           $${item.price.toFixed(2)}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: right; font-weight: 700; color: #0a0a0a; font-family: monospace;">
+        <td style="padding: 12px 14px; border-bottom: 1px solid #ececec; font-size: 12px; text-align: right; font-weight: 600; color: #1a1a1a; font-family: monospace;">
           $${(item.price * item.quantity).toFixed(2)}
         </td>
       </tr>
@@ -61,43 +61,39 @@ export function buildInvoiceHtml(order: Order): string {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: #fafaf8;
       color: #1a1a1a;
-      padding: 48px 20px;
+      padding: 40px 16px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
     .invoice-card {
-      max-width: 800px;
+      max-width: 740px;
       margin: 0 auto;
       background: #ffffff;
-      border: 1px solid #e6e6e2;
+      border: 1px solid #ececec;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     }
     .header-bar {
-      padding: 36px 36px 28px 36px;
-      border-bottom: 1px solid #1a1a1a;
+      padding: 28px 32px;
+      border-bottom: 1px solid #ececec;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      background: #1a1a1a;
-      color: #fafaf8;
+      align-items: center;
+      gap: 16px;
+      background: #fafaf8;
     }
     .brand-logo {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-      line-height: 1;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #1a1a1a;
+      line-height: 1.2;
       font-family: Georgia, 'Playfair Display', serif;
     }
     .brand-tag {
       font-size: 11px;
-      color: #d4d4d4;
-      margin-top: 6px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: monospace;
+      color: #6b7280;
+      margin-top: 3px;
     }
     .order-status {
       text-align: right;
@@ -105,68 +101,70 @@ export function buildInvoiceHtml(order: Order): string {
     .status-badge {
       display: inline-block;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: #a35c49;
-      color: #ffffff;
-      padding: 5px 12px;
+      letter-spacing: 0.06em;
+      background: #fdf5f3;
+      color: #a35c49;
+      border: 1px solid rgba(163, 92, 73, 0.25);
+      padding: 3px 8px;
+      border-radius: 3px;
       font-family: monospace;
     }
     .order-meta-id {
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 5px;
       font-family: monospace;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
     .order-meta-date {
       font-size: 11px;
-      color: #a3a3a3;
-      margin-top: 3px;
+      color: #6b7280;
+      margin-top: 2px;
       font-family: monospace;
     }
     .content-section {
-      padding: 36px;
+      padding: 32px;
     }
     .meta-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 28px;
-      margin-bottom: 32px;
-      padding-bottom: 28px;
-      border-bottom: 1px dashed #e6e6e2;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #ececec;
     }
     .meta-block h4 {
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #737373;
-      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 6px;
       font-family: monospace;
     }
     .meta-block p {
-      font-size: 13px;
+      font-size: 12px;
       color: #1a1a1a;
       line-height: 1.6;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     th {
-      padding: 12px 16px;
+      padding: 10px 14px;
       text-align: left;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-      background: #f4f4f0;
+      letter-spacing: 0.06em;
+      color: #6b7280;
+      border-bottom: 1px solid #ececec;
+      background: #fafaf8;
       font-family: monospace;
     }
     th:nth-child(2) {
@@ -180,56 +178,32 @@ export function buildInvoiceHtml(order: Order): string {
       justify-content: flex-end;
     }
     .summary-table {
-      width: 320px;
-      font-size: 13px;
+      width: 280px;
+      font-size: 12px;
     }
     .summary-row {
       display: flex;
       justify-content: space-between;
-      padding: 6px 0;
-      color: #525252;
+      padding: 5px 0;
+      color: #6b7280;
       font-family: monospace;
     }
     .summary-row.total {
-      border-top: 2px solid #1a1a1a;
-      margin-top: 8px;
-      padding-top: 12px;
-      font-size: 16px;
-      font-weight: 700;
+      border-top: 1px solid #ececec;
+      margin-top: 6px;
+      padding-top: 10px;
+      font-size: 14px;
+      font-weight: 600;
       color: #1a1a1a;
     }
-    .stamp-container {
-      margin-top: 28px;
-      padding: 16px;
-      border: 1px solid #e6e6e2;
-      background: #f4f4f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .stamp-text {
-      font-family: monospace;
-      font-size: 11px;
-      color: #525252;
-    }
-    .stamp-badge {
-      font-family: monospace;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #2b5b3c;
-      border: 1px solid #2b5b3c;
-      padding: 4px 8px;
-      letter-spacing: 0.08em;
-    }
     .footer-note {
-      padding: 20px 36px;
-      background: #f4f4f0;
-      border-top: 1px solid #e6e6e2;
+      padding: 18px 32px;
+      background: #fafaf8;
+      border-top: 1px solid #ececec;
       text-align: center;
       font-size: 11px;
       font-family: monospace;
-      color: #737373;
+      color: #6b7280;
     }
     @media print {
       body {
@@ -247,8 +221,8 @@ export function buildInvoiceHtml(order: Order): string {
   <div class="invoice-card">
     <div class="header-bar">
       <div>
-        <div class="brand-logo">CLOTHES™</div>
-        <div class="brand-tag">Clothes™ Apparel Co. · Accessible Conscious Luxury</div>
+        <div class="brand-logo">Clothes™ Apparel Co.</div>
+        <div class="brand-tag">Accessible Conscious Luxury · Official Order Invoice</div>
       </div>
       <div class="order-status">
         <span class="status-badge">Cash on Delivery</span>
@@ -267,21 +241,22 @@ export function buildInvoiceHtml(order: Order): string {
         </div>
 
         <div class="meta-block">
-          <h4>Delivery Address</h4>
+          <h4>Delivery Destination</h4>
           <p style="white-space: pre-line;">${safeAddress}</p>
         </div>
 
         <div class="meta-block">
-          <h4>Customer Care &amp; Terms</h4>
+          <h4>Delivery &amp; Care</h4>
           <p>Doorstep Inspection Permitted</p>
           <p>Concierge: concierge@clothes.com</p>
+          <p style="color: #2b5b3c; font-size: 11px; margin-top: 3px;">30-Day Hassle-Free Returns</p>
         </div>
       </div>
 
       <table>
         <thead>
           <tr>
-            <th>Garment / Silhouette</th>
+            <th>Item / Silhouette</th>
             <th>Qty</th>
             <th>Unit Price</th>
             <th>Total</th>
@@ -299,12 +274,12 @@ export function buildInvoiceHtml(order: Order): string {
             <span>$${order.subtotal.toFixed(2)}</span>
           </div>
           <div class="summary-row">
-            <span>Sales Tax (8%)</span>
+            <span>Estimated Sales Tax (8%)</span>
             <span>$${order.tax.toFixed(2)}</span>
           </div>
           <div class="summary-row">
-            <span>Standard Insured Shipping</span>
-            <span style="color: #2b5b3c; font-weight: 700;">FREE</span>
+            <span>Standard Shipping</span>
+            <span style="color: #2b5b3c; font-weight: 600;">FREE</span>
           </div>
           <div class="summary-row total">
             <span>Total Payable</span>
@@ -312,19 +287,10 @@ export function buildInvoiceHtml(order: Order): string {
           </div>
         </div>
       </div>
-
-      <div class="stamp-container">
-        <div class="stamp-text">
-          AUTHENTICATED RECORD // CLOTHES™ MINIMALISM IN EVERYDAY WEAR
-        </div>
-        <div class="stamp-badge">
-          VERIFIED ORDER
-        </div>
-      </div>
     </div>
 
     <div class="footer-note">
-      Thank you for choosing Clothes™ Apparel Co. For assistance, contact concierge@clothes.com. 30-day returns accepted.
+      Thank you for your order with Clothes™ Apparel Co. · concierge@clothes.com
     </div>
   </div>
 </body>
