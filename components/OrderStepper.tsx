@@ -14,7 +14,7 @@ const STEPS = [
 
 export default function OrderStepper({ currentStep }: OrderStepperProps) {
   return (
-    <div className="mb-8 border-b border-ink/15 pb-4">
+    <div className="mb-8 border-b border-border pb-4">
       <nav aria-label="Checkout Progress">
         <ol className="flex items-center gap-2 sm:gap-4 text-xs font-mono">
           {STEPS.map((item, idx) => {
@@ -24,7 +24,7 @@ export default function OrderStepper({ currentStep }: OrderStepperProps) {
             return (
               <li key={item.step} className="flex items-center gap-2 sm:gap-4">
                 {idx > 0 && (
-                  <span className="text-ink/30 select-none">/</span>
+                  <span className="text-border-strong select-none">/</span>
                 )}
                 {isCompleted ? (
                   <Link
@@ -32,7 +32,7 @@ export default function OrderStepper({ currentStep }: OrderStepperProps) {
                     className="group flex items-center gap-1.5 text-ink hover:text-ctrl-red transition-colors"
                   >
                     <span className="inline-block h-1.5 w-1.5 rounded-full bg-ink group-hover:bg-ctrl-red" />
-                    <span className="font-semibold underline underline-offset-4 decoration-ink/30">
+                    <span className="font-semibold underline underline-offset-4 decoration-border-strong">
                       {item.label}
                     </span>
                   </Link>
@@ -44,8 +44,8 @@ export default function OrderStepper({ currentStep }: OrderStepperProps) {
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 text-ink/40">
-                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-ink/30" />
+                  <div className="flex items-center gap-1.5 text-ink-soft">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-border-strong" />
                     <span>{item.label}</span>
                   </div>
                 )}

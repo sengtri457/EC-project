@@ -8,11 +8,11 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
-    <article className="group relative flex flex-col justify-between border-r border-b border-ink/20 bg-backdrop transition-colors hover:bg-backdrop-hi/40">
+    <article className="group relative flex flex-col justify-between border-r border-b border-border bg-paper transition-colors hover:bg-backdrop">
       {/* Controlled, Compact Lookbook Image Container */}
       <Link
         href={`/products/${product.id}`}
-        className="relative flex h-52 sm:h-64 md:h-72 w-full items-center justify-center overflow-hidden p-4 sm:p-6 bg-backdrop-hi/15"
+        className="relative flex h-52 sm:h-64 md:h-72 w-full items-center justify-center overflow-hidden p-4 sm:p-6 bg-backdrop/60"
       >
         <Image
           src={product.thumbnail}
@@ -43,7 +43,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Compact Price & Action */}
-        <div className="mt-2 pt-2 border-t border-ink/10 flex items-center justify-between text-xs font-mono">
+        <div className="mt-2 pt-2 border-t border-border flex items-center justify-between text-xs font-mono">
           <span className="font-bold text-ink text-xs">
             ${product.price.toFixed(2)}
           </span>

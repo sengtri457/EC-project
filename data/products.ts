@@ -412,7 +412,7 @@ export const products: Product[] = [
   // ===================== 26-33: KIDS =====================
   {
     id: 26,
-    title: "Youth CTRL Mini Fleece Hoodie",
+    title: "Youth Clothes™ Mini Fleece Hoodie",
     description:
       "Cozy fleece pullover hoodie tailored with reinforced seams, kangaroo pocket, and soft fleece lining.",
     price: 75.0,

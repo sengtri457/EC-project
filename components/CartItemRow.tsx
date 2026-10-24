@@ -18,10 +18,10 @@ export default function CartItemRow({ item }: CartItemRowProps) {
   const lineTotal = Number((item.price * item.quantity).toFixed(2));
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 border border-ink/20 bg-paper/60 transition-all hover:border-ink">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 border border-border bg-paper shadow-xs transition-all hover:border-border-strong">
       {/* Product Image & Info */}
       <div className="flex items-center gap-4">
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden bg-backdrop-hi/80 p-2 border border-ink/10">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden bg-backdrop p-2 border border-border">
           <Image
             src={item.thumbnail}
             alt={item.title}
@@ -45,7 +45,7 @@ export default function CartItemRow({ item }: CartItemRowProps) {
       </div>
 
       {/* Stepper, Total, and Remove */}
-      <div className="flex items-center justify-between sm:justify-end gap-6 border-t border-ink/15 pt-3 sm:border-0 sm:pt-0">
+      <div className="flex items-center justify-between sm:justify-end gap-6 border-t border-border pt-3 sm:border-0 sm:pt-0">
         {/* Minimalist Stepper */}
         <div className="flex h-9 items-center border border-ink bg-paper">
           <button

@@ -6,9 +6,9 @@ import Footer from "@/components/Footer";
 import Toast from "@/components/Toast";
 
 export const metadata: Metadata = {
-  title: "CTRL — The New Era",
+  title: "Clothes™ — Accessible Conscious Luxury | Minimalism in Everyday Wear",
   description:
-    "A new chapter of elevated essentials and statement silhouettes. Limited release, June 2026.",
+    "Curated wardrobe essentials crafted from tactile sustainable fabrics and timeless silhouettes. Accessible conscious luxury designed for modern living.",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full antialiased font-sans">
-      <body className="flex min-h-full flex-col bg-backdrop text-ink font-sans selection:bg-ctrl-red selection:text-paper overflow-x-hidden">
+      <body className="flex min-h-full flex-col bg-backdrop text-ink font-sans selection:bg-terracotta selection:text-paper overflow-x-hidden">
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>

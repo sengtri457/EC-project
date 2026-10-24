@@ -23,7 +23,7 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-20 sm:px-6">
-        <div className="flex min-h-[50vh] flex-col items-center justify-center border border-ink/20 bg-paper/60 p-10 text-center">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center border border-border bg-paper p-10 text-center shadow-sm">
           <span className="type-label text-xs uppercase tracking-widest text-ink-soft">
             Bag Empty
           </span>
@@ -71,7 +71,7 @@ export default function CartPage() {
             onClick={clearCart}
             className="font-medium text-ink-soft hover:text-ctrl-red transition-colors underline underline-offset-2"
           >
-            Clear slip
+            Clear bag
           </button>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function CartPage() {
             <CartItemRow key={item.productId} item={item} />
           ))}
 
-          <div className="pt-6 flex items-center justify-between border-t border-ink/15">
+          <div className="pt-6 flex items-center justify-between border-t border-border">
             <Link
               href="/#pieces"
               className="type-label inline-flex items-center gap-1.5 text-xs text-ink hover:text-ctrl-red transition-colors underline underline-offset-4 decoration-ctrl-red"
@@ -92,7 +92,7 @@ export default function CartPage() {
             </Link>
 
             <span className="text-[11px] text-ink-soft font-mono">
-              CTRL Limited Release
+              Clothes™ Autumn Capsule
             </span>
           </div>
         </div>

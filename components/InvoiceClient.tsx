@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Order } from "@/types";
 import { getOrderById } from "@/lib/orders";
@@ -91,7 +92,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
       <OrderStepper currentStep={3} />
 
       {/* Confirmation Banner */}
-      <div className="mb-6 border-2 border-ink bg-paper/90 p-5 shadow-sm">
+      <div className="mb-6 border border-border bg-paper p-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-ctrl-red text-white text-xs font-mono font-bold">
@@ -111,7 +112,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
             <button
               type="button"
               onClick={() => window.print()}
-              className="type-label inline-flex items-center justify-center border border-ink px-3 py-2 text-xs uppercase tracking-widest text-ink hover:bg-ink/5 transition-colors cursor-pointer"
+              className="type-label inline-flex items-center justify-center border border-border-strong px-3 py-2 text-xs uppercase tracking-widest text-ink hover:border-ink hover:bg-backdrop transition-colors cursor-pointer"
             >
               Print
             </button>
@@ -141,19 +142,30 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
       </div>
 
       {/* Authentic Studio Receipt Card */}
-      <div className="border-2 border-ink bg-paper/80 shadow-md">
+      <div className="border border-border bg-paper shadow-md">
         {/* Receipt Header */}
-        <div className="border-b-2 border-ink p-6 sm:p-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 bg-ink text-paper">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-paper/70">
-              Official Packing &amp; Dispatch Record
-            </span>
-            <h1 className="type-display mt-1 text-2xl sm:text-3xl font-black tracking-tight text-paper">
-              CTRL — THE NEW ERA
-            </h1>
-            <p className="font-mono text-[11px] text-paper/60 mt-0.5">
-              Limited Archive Release · Studio Dispatch Slip
-            </p>
+        <div className="border-b border-border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 bg-ink text-paper">
+          <div className="flex items-start gap-4">
+            <div className="relative h-11 w-14 shrink-0 mt-0.5">
+              <Image
+                src="/images/logoDevs.png"
+                alt="Clothes™ Logo"
+                fill
+                sizes="56px"
+                className="object-contain brightness-0 invert"
+              />
+            </div>
+            <div>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-paper/70">
+                Official Order &amp; Delivery Invoice
+              </span>
+              <h1 className="type-display mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-paper">
+                Clothes™ Apparel Co.
+              </h1>
+              <p className="font-mono text-[11px] text-paper/60 mt-0.5">
+                Accessible Conscious Luxury · Autumn Capsule
+              </p>
+            </div>
           </div>
           <div className="text-left sm:text-right">
             <span className="inline-block bg-ctrl-red text-white px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-widest">
@@ -168,7 +180,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
 
         {/* Details Grid */}
         <div className="p-6 sm:p-8 space-y-8">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 border border-ink/20 bg-backdrop/60 p-5">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 border border-border bg-backdrop p-5">
             <div>
               <h3 className="type-label text-[10px] uppercase tracking-widest text-ink-soft">
                 Billed To
@@ -191,9 +203,9 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto border-t border-b border-ink/20">
+          <div className="overflow-x-auto border-t border-b border-border">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-ink/20 bg-backdrop/40 font-mono text-[10px] font-bold uppercase tracking-wider text-ink">
+              <thead className="border-b border-border bg-backdrop font-mono text-[10px] font-bold uppercase tracking-wider text-ink">
                 <tr>
                   <th className="py-3 px-3">Silhouette / Item</th>
                   <th className="py-3 px-3 text-center">Qty</th>
@@ -201,7 +213,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                   <th className="py-3 px-3 text-right">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-ink/10 font-mono">
+              <tbody className="divide-y divide-border font-mono">
                 {order.items.map((item) => (
                   <tr key={item.productId}>
                     <td className="py-3.5 px-3 font-semibold text-ink font-sans">
@@ -246,7 +258,7 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
         </div>
 
         {/* Action Bottom */}
-        <div className="border-t-2 border-ink bg-backdrop/50 p-5 flex items-center justify-between flex-wrap gap-4">
+        <div className="border-t border-border bg-backdrop/60 p-5 flex items-center justify-between flex-wrap gap-4">
           <Link
             href="/"
             className="type-label inline-flex items-center gap-1.5 text-xs text-ink-soft hover:text-ink transition-colors"

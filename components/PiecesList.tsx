@@ -44,14 +44,14 @@ export default function PiecesList({ products }: PiecesListProps) {
     >
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b-2 border-ink pb-5">
         <h2 id="pieces-title" className="type-display text-[clamp(2rem,5vw,3.75rem)]">
-          The pieces
+          The Capsule
         </h2>
-        <p className="max-w-[34ch] text-sm text-ink-soft leading-relaxed">
-          Four statement silhouettes, one limited release. Handcrafted tailoring &amp; heavyweight raw knitwear.
+        <p className="max-w-[36ch] text-sm text-ink-soft leading-relaxed">
+          Tactile fabrics and refined silhouettes designed for effortless versatility. Mindful essentials crafted to endure.
         </p>
       </div>
 
-      <ol ref={listRef} className="divide-y divide-ink/20">
+      <ol ref={listRef} className="divide-y divide-border">
         {products.map((piece, idx) => {
           return (
             <li key={piece.id} data-cell="true">
@@ -59,7 +59,7 @@ export default function PiecesList({ products }: PiecesListProps) {
                 href={`/products/${piece.id}`}
                 onPointerEnter={(e) => handlePointerEnter(idx, e)}
                 onFocus={() => handlePointerEnter(idx)}
-                className="group grid grid-cols-[4rem_1fr_auto] items-center gap-x-5 gap-y-1 py-5 outline-none transition-colors hover:bg-backdrop-hi/70 focus-visible:bg-backdrop-hi/70 md:grid-cols-[6rem_1.3fr_1fr_8rem_auto] md:gap-x-8 px-2 -mx-2 rounded-sm"
+                className="group grid grid-cols-[4rem_1fr_auto] items-center gap-x-5 gap-y-1 py-5 outline-none transition-colors hover:bg-paper focus-visible:bg-paper md:grid-cols-[6rem_1.3fr_1fr_8rem_auto] md:gap-x-8 px-2 -mx-2 rounded-sm"
               >
                 {/* Hanger Thumbnail */}
                 <span className="flex h-[5.5rem] items-start justify-center md:h-[6.5rem]">
