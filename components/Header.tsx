@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
@@ -9,23 +10,33 @@ export default function Header() {
   return (
     <>
       {/* Editorial Announcement Bar */}
-      <div className="bg-ink px-4 py-1.5 text-center text-[11px] font-mono tracking-widest uppercase text-paper/80 border-b border-paper/10">
-        <span>CTRL — Limited Release June 2026</span>
+      <div className="bg-ink px-4 py-1.5 text-center text-[11px] font-mono tracking-widest uppercase text-paper/85 border-b border-paper/10">
+        <span>Complimentary Standard Shipping On Orders Over $100</span>
         <span className="mx-2 text-ctrl-red">/</span>
-        <span className="text-paper/60">Worldwide Dispatch</span>
+        <span className="text-paper/60">Autumn Capsule</span>
       </div>
 
       {/* Main Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-ink/15 bg-backdrop/85 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-backdrop/90 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo / Brand */}
           <div className="flex items-center gap-8">
             <Link
               href="/"
-              className="flex items-center gap-1.5 text-ink transition-opacity hover:opacity-80"
+              className="flex items-center gap-2.5 text-ink transition-opacity hover:opacity-85"
             >
-              <span className="type-display text-xl tracking-tight">
-                CTRL<span className="text-ctrl-red">.</span>
+              <div className="relative h-7 w-9 shrink-0">
+                <Image
+                  src="/images/logoDevs.png"
+                  alt="Clothes™ Logo"
+                  fill
+                  sizes="36px"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+              <span className="type-display text-2xl font-semibold tracking-tight">
+                Clothes<span className="text-xs align-super font-sans text-ink-soft">™</span>
               </span>
             </Link>
 
@@ -62,7 +73,7 @@ export default function Header() {
             <Link
               href="/cart"
               aria-label={`Shopping bag with ${isLoaded ? itemCount : 0} items`}
-              className="group relative flex items-center gap-2 border border-ink/40 bg-paper px-3.5 py-1 text-xs font-semibold text-ink shadow-sm transition-all hover:border-ink hover:bg-white active:scale-95"
+              className="group relative flex items-center gap-2 border border-border-strong bg-paper px-3.5 py-1 text-xs font-semibold text-ink shadow-sm transition-all hover:border-ink hover:bg-paper active:scale-95"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

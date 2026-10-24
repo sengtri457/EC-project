@@ -68,7 +68,7 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
   };
 
   return (
-    <section id="catalog" className="bg-backdrop px-[clamp(1rem,4vw,3.5rem)] py-16 border-t border-ink/20">
+    <section id="catalog" className="bg-backdrop px-[clamp(1rem,4vw,3.5rem)] py-16 border-t border-border">
       {/* Centered Editorial Max-Width Container */}
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b-2 border-ink pb-6">
@@ -108,14 +108,14 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
         />
 
         {/* 3-Column Architectural Hairline Lookbook Grid (2-cols on mobile for tight balance) */}
-        <div className="mt-8 border-t border-l border-ink/20 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mt-8 border-t border-l border-border grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3">
           {filteredAndSortedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
         {filteredAndSortedProducts.length === 0 && (
-          <div className="py-20 text-center border border-ink/20 bg-paper/40 mt-8">
+          <div className="py-20 text-center border border-border bg-paper/60 mt-8">
             <p className="type-display text-lg text-ink">No matching silhouettes found</p>
             <p className="text-xs text-ink-soft mt-1 font-mono">
               No items match your filter criteria.

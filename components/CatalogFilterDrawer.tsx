@@ -114,7 +114,7 @@ export default function CatalogFilterDrawer({
   return (
     <div className="pt-6">
       {/* 1. Ultra-Clean Single-Line Trigger Bar */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-ink/15">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-border">
         {/* Left: Filter Trigger Button */}
         <div className="flex flex-wrap items-center gap-3">
           <button
@@ -123,7 +123,7 @@ export default function CatalogFilterDrawer({
             className={`type-label flex items-center gap-2.5 h-10 px-4 text-xs tracking-wider transition-all border ${
               activeFilterCount > 0
                 ? "border-ink bg-ink text-paper shadow-sm"
-                : "border-ink/30 bg-paper/70 text-ink hover:border-ink hover:bg-white"
+                : "border-border-strong bg-paper text-ink hover:border-ink hover:bg-paper"
             }`}
           >
             <svg
@@ -152,7 +152,7 @@ export default function CatalogFilterDrawer({
 
           {/* Active summary pill if filtered */}
           {hasFilters && (
-            <div className="flex items-center gap-2 text-xs font-mono bg-paper border border-ink/15 px-3 py-1.5">
+            <div className="flex items-center gap-2 text-xs font-mono bg-paper border border-border px-3 py-1.5">
               <span className="text-ink-soft uppercase text-[10px]">Active:</span>
               <span className="font-bold text-ink uppercase">
                 {selectedAudience !== "all" && `${selectedAudience} • `}
@@ -199,7 +199,7 @@ export default function CatalogFilterDrawer({
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value as any)}
-              className="h-10 px-2.5 text-xs font-mono border border-ink/30 bg-paper text-ink outline-none cursor-pointer hover:border-ink transition-colors"
+              className="h-10 px-2.5 text-xs font-mono border border-border-strong bg-paper text-ink outline-none cursor-pointer hover:border-ink transition-colors"
             >
               <option value="featured">Featured</option>
               <option value="price-asc">Price: Low → High</option>
@@ -218,7 +218,7 @@ export default function CatalogFilterDrawer({
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative w-full max-w-4xl bg-backdrop border-2 border-ink shadow-2xl my-8 p-6 sm:p-8 text-ink"
+            className="relative w-full max-w-4xl bg-paper border-2 border-ink shadow-2xl my-8 p-6 sm:p-8 text-ink"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}
@@ -238,7 +238,7 @@ export default function CatalogFilterDrawer({
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="type-label px-3 py-1.5 border border-ink/30 hover:border-ink hover:bg-ink hover:text-paper transition-all text-xs uppercase tracking-widest"
+                className="type-label px-3 py-1.5 border border-border-strong hover:border-ink hover:bg-ink hover:text-paper transition-all text-xs uppercase tracking-widest"
               >
                 ✕ Close
               </button>
@@ -248,7 +248,7 @@ export default function CatalogFilterDrawer({
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {/* Column 1: Audience */}
               <div className="space-y-3">
-                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-ink/20 pb-2 block">
+                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-border pb-2 block">
                   1. Audience
                 </span>
                 <div className="space-y-1.5">
@@ -262,7 +262,7 @@ export default function CatalogFilterDrawer({
                         className={`w-full flex items-center justify-between px-3 py-2 text-xs font-mono transition-all text-left border ${
                           isChecked
                             ? "border-ink bg-ink text-paper font-bold shadow-sm"
-                            : "border-transparent bg-paper/40 text-ink hover:bg-paper hover:border-ink/20"
+                            : "border-transparent bg-backdrop text-ink hover:bg-paper hover:border-border-strong"
                         }`}
                       >
                         <span className="uppercase">{aud.label}</span>
@@ -275,7 +275,7 @@ export default function CatalogFilterDrawer({
 
               {/* Column 2: Department */}
               <div className="space-y-3">
-                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-ink/20 pb-2 block">
+                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-border pb-2 block">
                   2. Department
                 </span>
                 <div className="space-y-1.5">
@@ -292,7 +292,7 @@ export default function CatalogFilterDrawer({
                         className={`w-full flex items-center justify-between px-3 py-2 text-xs font-mono transition-all text-left border ${
                           isChecked
                             ? "border-ink bg-ink text-paper font-bold shadow-sm"
-                            : "border-transparent bg-paper/40 text-ink hover:bg-paper hover:border-ink/20"
+                            : "border-transparent bg-backdrop text-ink hover:bg-paper hover:border-border-strong"
                         }`}
                       >
                         <span className="uppercase">{dept.label}</span>
@@ -305,7 +305,7 @@ export default function CatalogFilterDrawer({
 
               {/* Column 3: Silhouette (Context-Aware) */}
               <div className="space-y-3">
-                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-ink/20 pb-2 block">
+                <span className="type-label text-xs uppercase tracking-wider text-ink border-b border-border pb-2 block">
                   3. Silhouette ({selectedDepartment})
                 </span>
                 <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
@@ -319,7 +319,7 @@ export default function CatalogFilterDrawer({
                         className={`w-full flex items-center justify-between px-3 py-2 text-xs font-mono transition-all text-left border ${
                           isChecked
                             ? "border-ctrl-red bg-ctrl-red text-paper font-bold shadow-sm"
-                            : "border-transparent bg-paper/40 text-ink hover:bg-paper hover:border-ink/20"
+                            : "border-transparent bg-backdrop text-ink hover:bg-paper hover:border-border-strong"
                         }`}
                       >
                         <span className="uppercase">{sub.label}</span>
@@ -332,7 +332,7 @@ export default function CatalogFilterDrawer({
             </div>
 
             {/* Drawer Footer Actions */}
-            <div className="mt-8 pt-5 border-t border-ink/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="mt-8 pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
