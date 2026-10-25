@@ -44,11 +44,41 @@ export type CartItem = {
   quantity: number;
 };
 
+export type ShippingMethod =
+  | "phnom_penh_express"
+  | "phnom_penh_standard"
+  | "provincial";
+
+export type PaymentMethod = "khqr" | "cod" | "card";
+
 export type Customer = {
   name: string;
   email: string;
-  phone: string;
-  address: string;
+  phone: string; // Cambodian phone (0xx xxx xxx or +855...)
+  telegram?: string;
+  address: string; // Full composite address string
+  
+  // Structured Cambodian Address
+  cityProvince: string; // e.g. "Phnom Penh", "Siem Reap", "Battambang"
+  khanDistrict?: string; // e.g. "Chamkarmon", "Tuol Kouk"
+  sangkatCommune?: string; // e.g. "BKK1", "Phsar Thmey"
+  streetAddress: string; // e.g. "House #24, Street 310"
+  landmark?: string; // e.g. "Near Russian Market / BKK High School"
+
+  // Legacy fallback optional fields
+  street?: string;
+  apartment?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+
+  // Order choices
+  shippingMethod?: ShippingMethod;
+  shippingCost?: number;
+  paymentMethod?: PaymentMethod;
+  cardNumberLast4?: string;
+  orderNotes?: string;
 };
 
 export type Order = {
@@ -57,6 +87,33 @@ export type Order = {
   customer: Customer;
   items: CartItem[];
   subtotal: number;
+  shippingCost: number;
   tax: number;
   total: number;
+  totalKhr?: number; // Cambodian Riel at 1 USD = 4,100 KHR
+  trackingNumber?: string;
+  status?: "confirmed" | "processing" | "out_for_delivery" | "delivered";
+};
+
+export type UserAddress = {
+  cityProvince: string;
+  khanDistrict?: string;
+  sangkatCommune?: string;
+  streetAddress: string;
+  landmark?: string;
+  // Fallbacks
+  street?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  country?: string;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  telegram?: string;
+  address?: UserAddress;
 };

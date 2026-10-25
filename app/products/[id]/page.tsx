@@ -33,7 +33,7 @@ export default async function ProductPage({
         </Link>
         <span>/</span>
         <Link
-          href="/#catalog"
+          href="/catalog"
           className="uppercase hover:text-ink transition-colors"
         >
           Catalog

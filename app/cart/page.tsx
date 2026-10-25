@@ -14,7 +14,7 @@ export default function CartPage() {
       <div className="mx-auto flex min-h-[50vh] max-w-7xl items-center justify-center px-4 py-16">
         <div className="flex flex-col items-center gap-3 text-ink-soft">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink border-t-transparent" />
-          <p className="text-xs font-mono uppercase tracking-wider">Retrieving bag...</p>
+          <p className="text-xs font-mono uppercase tracking-wider">Loading shopping bag...</p>
         </div>
       </div>
     );
@@ -28,18 +28,18 @@ export default function CartPage() {
             Bag Empty
           </span>
           <h1 className="type-display mt-4 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-            No Pieces on Your Slip
+            Your Shopping Bag is Empty
           </h1>
           <p className="mt-2 max-w-sm text-xs leading-relaxed text-ink-soft">
-            Items added to your bag will be held for this drop. Explore the rail to select your silhouette.
+            You have not added any items yet. Browse our full catalog to discover new arrivals and essentials.
           </p>
-          <div className="mt-8">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/#pieces"
-              className="type-label inline-flex items-center gap-2 bg-ink px-7 py-3.5 text-xs text-paper uppercase tracking-widest transition-all hover:bg-ink-soft"
+              href="/catalog"
+              className="type-label inline-flex items-center gap-2 bg-ink px-7 py-3.5 text-xs text-paper uppercase tracking-widest transition-all hover:bg-ink-soft shadow-sm"
             >
-              <span>See the Collection</span>
-              <span aria-hidden="true">→</span>
+              <span>Explore The Catalog</span>
+              <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </div>
@@ -56,22 +56,22 @@ export default function CartPage() {
       <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between border-b-2 border-ink pb-5">
         <div>
           <span className="type-label text-xs uppercase tracking-widest text-ink-soft block">
-            Review Bag
+            Step 1 of 3
           </span>
-          <h1 className="type-display text-3xl text-ink sm:text-4xl">
-            Acquisition Slip
+          <h1 className="type-display text-3xl text-ink sm:text-4xl font-semibold">
+            Review Shopping Bag
           </h1>
         </div>
 
         <div className="flex items-center gap-4 text-xs font-mono">
           <span className="text-ink-soft">
-            {itemCount} {itemCount === 1 ? "piece" : "pieces"}
+            {itemCount} {itemCount === 1 ? "item" : "items"}
           </span>
           <button
             onClick={clearCart}
-            className="font-medium text-ink-soft hover:text-ctrl-red transition-colors underline underline-offset-2"
+            className="font-medium text-ink-soft hover:text-ctrl-red transition-colors underline underline-offset-2 cursor-pointer"
           >
-            Clear bag
+            Clear all
           </button>
         </div>
       </div>
@@ -85,14 +85,14 @@ export default function CartPage() {
 
           <div className="pt-6 flex items-center justify-between border-t border-border">
             <Link
-              href="/#pieces"
+              href="/catalog"
               className="type-label inline-flex items-center gap-1.5 text-xs text-ink hover:text-ctrl-red transition-colors underline underline-offset-4 decoration-ctrl-red"
             >
-              <span>← Back to the Collection</span>
+              <span>&larr; Back to Catalog</span>
             </Link>
 
             <span className="text-[11px] text-ink-soft font-mono">
-              Clothes™ Autumn Capsule
+              Clothes™ Cambodia Delivery
             </span>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 
 type MegaMenuKey = "men" | "women" | "footwear" | null;
 
@@ -16,7 +17,8 @@ interface FilterParams {
 }
 
 export default function Header() {
-  const { itemCount, isLoaded } = useCart();
+  const { itemCount, isLoaded, openDrawer } = useCart();
+  const { user, isLoaded: isAuthLoaded } = useAuth();
   const [activeMenu, setActiveMenu] = useState<MegaMenuKey>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,12 +28,47 @@ export default function Header() {
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchOverlayRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
     }
+  }, [isSearchOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === "/" &&
+        !["INPUT", "TEXTAREA", "SELECT"].includes(
+          document.activeElement?.tagName || ""
+        )
+      ) {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === "Escape" && isSearchOpen) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        isSearchOpen &&
+        searchOverlayRef.current &&
+        !searchOverlayRef.current.contains(e.target as Node)
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [isSearchOpen]);
 
   useEffect(() => {
@@ -67,17 +104,12 @@ export default function Header() {
 
     const queryString = searchParams.toString();
     const destinationUrl = queryString
-      ? `/?${queryString}#catalog`
-      : `/#catalog`;
+      ? `/catalog?${queryString}`
+      : `/catalog`;
 
-    if (window.location.pathname === "/") {
+    if (window.location.pathname === "/catalog") {
       window.history.pushState({}, "", destinationUrl);
       window.dispatchEvent(new Event("clothes:navigate-filter"));
-
-      const catalogElem = document.getElementById("catalog");
-      if (catalogElem) {
-        catalogElem.scrollIntoView({ behavior: "smooth" });
-      }
     } else {
       window.location.href = destinationUrl;
     }
@@ -95,17 +127,19 @@ export default function Header() {
       {/* Editorial Announcement Bar */}
       <div className="bg-ink px-4 py-1.5 text-center text-[11px] font-mono tracking-widest uppercase text-paper/85 border-b border-paper/10 flex items-center justify-between sm:justify-center relative">
         <div className="mx-auto flex items-center gap-2">
-          <span>Complimentary Shipping On Orders Over $100</span>
+          <span>Free Phnom Penh Delivery Over $30</span>
           <span className="hidden sm:inline text-ctrl-red">/</span>
-          <span className="hidden sm:inline text-paper/60">30-Day Returns</span>
+          <span className="hidden sm:inline text-paper/60">Nationwide Cambodia Shipping</span>
           <span className="hidden md:inline text-ctrl-red">/</span>
-          <span className="hidden md:inline text-paper/60">Autumn Capsule</span>
+          <span className="hidden md:inline text-paper/60">KHQR &amp; Cash on Delivery</span>
         </div>
 
         {/* Currency Switcher in top bar */}
         <div className="hidden lg:flex items-center gap-1 text-[10px] font-mono text-paper/70 absolute right-6">
           <div className="relative">
             <button
+              type="button"
+              suppressHydrationWarning
               onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
               className="hover:text-paper transition-colors flex items-center gap-1 cursor-pointer"
             >
@@ -136,9 +170,115 @@ export default function Header() {
 
       {/* Main Header */}
       <header
-        className="sticky top-0 z-40 w-full border-b border-border bg-backdrop/95 backdrop-blur-md"
+        className="sticky top-0 z-40 w-full border-b border-border bg-backdrop/95 backdrop-blur-md relative"
         onMouseLeave={handleMouseLeave}
       >
+        {/* Full-Width Luxury Search Overlay */}
+        {isSearchOpen && (
+          <div
+            ref={searchOverlayRef}
+            className="absolute inset-0 z-50 flex items-center bg-paper/98 backdrop-blur-md px-4 sm:px-6 lg:px-8 border-b border-border shadow-md"
+          >
+            <div className="mx-auto flex h-full w-full max-w-7xl items-center gap-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 shrink-0 text-ink"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex-1 flex items-center gap-2"
+              >
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search pieces, fabrics, styles, or collections (e.g. linen shirt, denim, relaxed blazer)..."
+                  className="w-full bg-transparent text-xs sm:text-sm font-sans tracking-tight text-ink placeholder:text-placeholder focus:outline-none"
+                />
+                {searchQuery.trim().length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="p-1 text-ink-soft hover:text-ink transition-colors cursor-pointer"
+                    aria-label="Clear search input"
+                  >
+                    <svg
+                      className="h-3.5 w-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="shrink-0 rounded bg-ink px-3 py-1.5 text-xs font-mono font-medium text-paper hover:bg-ink/90 transition-colors cursor-pointer"
+                >
+                  Search
+                </button>
+              </form>
+
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(false)}
+                aria-label="Close search"
+                className="shrink-0 flex items-center gap-1.5 rounded border border-border bg-canvas/50 px-2.5 py-1 text-xs font-mono text-ink-soft hover:text-ink hover:bg-canvas transition-colors cursor-pointer"
+              >
+                <span>Close</span>
+                <kbd className="hidden sm:inline rounded border border-border bg-paper px-1 py-0.5 text-[9px] text-ink-soft">
+                  ESC
+                </kbd>
+              </button>
+            </div>
+
+            {/* Trending Suggestions Dropdown Tray */}
+            <div className="absolute top-full left-0 w-full border-b border-border bg-paper/98 backdrop-blur-md shadow-lg py-2.5 px-4 sm:px-6 lg:px-8">
+              <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-ink-soft mr-1">
+                  Trending:
+                </span>
+                {[
+                  "Linen Overshirt",
+                  "Raw Denim",
+                  "Relaxed Blazer",
+                  "Heavyweight Tee",
+                  "Kampot Robe",
+                  "Khmer Kroma",
+                ].map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => {
+                      navigateFilter({ search: tag });
+                    }}
+                    className="rounded-full border border-border bg-canvas/50 px-2.5 py-0.5 text-[11px] font-mono text-ink transition-colors hover:border-ink hover:bg-canvas cursor-pointer"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Left: Mobile Hamburger & Brand */}
           <div className="flex items-center gap-4 lg:gap-8">
@@ -189,13 +329,21 @@ export default function Header() {
 
             {/* Desktop Option B Navigation Links with Dropdown Triggers */}
             <nav className="hidden lg:flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-ink-soft">
-              {/* 1. New In / Capsule */}
+              {/* 1. All Catalog */}
+              <Link
+                href="/catalog"
+                className="px-3 py-4 transition-colors hover:text-ink font-semibold text-ink"
+              >
+                Catalog
+              </Link>
+
+              {/* 2. New In / Capsule */}
               <Link
                 href="/#pieces"
                 className="px-3 py-4 transition-colors hover:text-ink flex items-center gap-1.5 relative group"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-ctrl-red animate-pulse" />
-                <span>New In</span>
+                <span>Capsule</span>
               </Link>
 
               {/* 2. Men Mega-Menu Trigger */}
@@ -284,72 +432,86 @@ export default function Header() {
           </div>
 
           {/* Right Utilities */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            {/* Quick Search Toggle / Input */}
-            <div className="relative flex items-center">
-              {isSearchOpen ? (
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="flex items-center border border-border bg-paper shadow-sm rounded overflow-hidden"
-                >
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search silhouettes..."
-                    className="w-40 sm:w-56 px-3 py-1 text-xs text-ink placeholder:text-placeholder focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    aria-label="Submit search"
-                    className="px-2 py-1 text-ink hover:text-ctrl-red transition-colors text-xs font-mono"
-                  >
-                    ↵
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsSearchOpen(false)}
-                    aria-label="Close search"
-                    className="px-2 py-1 text-ink-soft hover:text-ink transition-colors text-xs"
-                  >
-                    ✕
-                  </button>
-                </form>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsSearchOpen(true)}
-                  aria-label="Open search"
-                  className="p-1.5 text-ink-soft hover:text-ink transition-colors cursor-pointer"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
-              )}
-            </div>
-
-            {/* Shopping Bag Button */}
-            <Link
-              href="/cart"
-              aria-label={`Shopping bag with ${isLoaded ? itemCount : 0} items`}
-              className="group relative flex items-center gap-2 border border-border bg-paper px-3 py-1 text-xs font-semibold text-ink shadow-sm transition-all hover:border-ink hover:bg-canvas active:scale-95"
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Clean Quick Search Trigger */}
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Search catalog"
+              className="flex items-center gap-1.5 p-1.5 text-ink-soft hover:text-ink transition-colors cursor-pointer shrink-0 group"
+              title="Search catalog (Press /)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-3.5 w-3.5 text-ink transition-colors"
+                className="h-4 w-4 shrink-0 transition-transform group-hover:scale-105"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <span className="type-label text-[11px] hidden xl:inline text-ink-soft font-mono">
+                Search
+              </span>
+            </button>
+
+            {/* User Account / Sign In */}
+            {isAuthLoaded && user ? (
+              <div className="relative group shrink-0">
+                <Link
+                  href="/login"
+                  className="shrink-0 whitespace-nowrap flex items-center gap-1.5 border border-border bg-paper px-2.5 py-1 text-xs text-ink shadow-sm hover:border-ink transition-colors"
+                  title="View Account Profile"
+                >
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-ink text-paper text-[9px] font-mono font-semibold">
+                    {user.name.charAt(0)}
+                  </span>
+                  <span className="type-label text-[11px] whitespace-nowrap hidden sm:inline max-w-[80px] truncate">
+                    {user.name.split(" ")[0]}
+                  </span>
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="type-label shrink-0 whitespace-nowrap flex items-center gap-1.5 border border-border bg-paper px-2.5 py-1 text-xs text-ink shadow-sm hover:border-ink hover:bg-canvas transition-colors"
+                title="Member Sign In"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5 shrink-0 text-ink-soft"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span className="text-[11px] whitespace-nowrap hidden sm:inline">
+                  Sign In
+                </span>
+              </Link>
+            )}
+
+            {/* Shopping Bag Button (Opens Slide-over Drawer) */}
+            <button
+              type="button"
+              onClick={openDrawer}
+              aria-label={`Shopping bag with ${isLoaded ? itemCount : 0} items`}
+              className="shrink-0 whitespace-nowrap group relative flex items-center gap-2 border border-border bg-paper px-3 py-1 text-xs font-semibold text-ink shadow-sm transition-all hover:border-ink hover:bg-canvas active:scale-95 cursor-pointer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5 shrink-0 text-ink transition-colors"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -361,15 +523,15 @@ export default function Header() {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 />
               </svg>
-              <span className="type-label text-[11px] hidden sm:inline">
+              <span className="type-label text-[11px] whitespace-nowrap hidden sm:inline">
                 Bag
               </span>
               {isLoaded && itemCount > 0 && (
-                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-ctrl-red px-1 text-[10px] font-mono font-bold text-paper">
+                <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-ctrl-red px-1 text-[10px] font-mono font-bold text-paper">
                   {itemCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -829,7 +991,7 @@ export default function Header() {
             />
 
             {/* Off-Canvas Slide Panel */}
-            <div className="fixed inset-y-0 left-0 w-full max-w-xs bg-paper shadow-2xl flex flex-col z-10 border-r border-border">
+            <div className="fixed inset-y-0 left-0 h-[100dvh] w-full max-w-xs bg-paper shadow-2xl flex flex-col z-10 border-r border-border">
               {/* Drawer Top */}
               <div className="flex items-center justify-between p-4 border-b border-border bg-canvas/40">
                 <div className="flex items-center gap-2">

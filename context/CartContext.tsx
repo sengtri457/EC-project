@@ -119,7 +119,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 interface CartContextType {
   items: CartItem[];
   isLoaded: boolean;
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number, maxStock?: number) => void;
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number, maxStock?: number, showDrawer?: boolean) => void;
   removeItem: (productId: number) => void;
   updateQty: (productId: number, quantity: number, maxStock?: number) => void;
   clearCart: () => void;
@@ -129,6 +129,9 @@ interface CartContextType {
   total: number;
   toastMessage: string | null;
   dismissToast: () => void;
+  isDrawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -140,6 +143,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   });
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialLoadRef = useRef(false);
 
@@ -173,13 +177,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setToastMessage(null);
   }, []);
 
+  const openDrawer = useCallback(() => {
+    setIsDrawerOpen(true);
+  }, []);
+
+  const closeDrawer = useCallback(() => {
+    setIsDrawerOpen(false);
+  }, []);
+
   const addItem = useCallback(
-    (item: Omit<CartItem, "quantity">, quantity = 1, maxStock?: number) => {
+    (item: Omit<CartItem, "quantity">, quantity = 1, maxStock?: number, showDrawer = true) => {
       dispatch({
         type: "ADD",
         payload: { item, quantity, maxStock },
       });
-      showToast(`Added "${item.title}" to cart!`);
+      showToast(`Added "${item.title}" to your bag.`);
+      if (showDrawer) {
+        setIsDrawerOpen(true);
+      }
     },
     [showToast]
   );
@@ -218,6 +233,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         total,
         toastMessage,
         dismissToast,
+        isDrawerOpen,
+        openDrawer,
+        closeDrawer,
       }}
     >
       {children}

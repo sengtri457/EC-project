@@ -193,7 +193,7 @@ export default function ClothingRack({ products }: ClothingRackProps) {
         <div
           role="tablist"
           aria-label="Collection capsules"
-          className="mt-6 inline-flex max-w-full items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 rounded-full border border-border/80 bg-paper/90 backdrop-blur-xs shadow-xs overflow-x-auto"
+          className="mt-6 inline-flex max-w-[calc(100vw-2rem)] items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 rounded-full border border-border/80 bg-paper/90 backdrop-blur-xs shadow-xs overflow-x-auto scrollbar-none"
         >
           {CAPSULE_CATEGORIES.map((capsule) => {
             const isActive = activeCapsuleId === capsule.id;
@@ -237,9 +237,9 @@ export default function ClothingRack({ products }: ClothingRackProps) {
             type="button"
             aria-label="Slide left on rail"
             onClick={() => handleScrollBy("left")}
-            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 h-10 w-10 sm:h-11 sm:w-11 rounded-full border border-border bg-paper/90 backdrop-blur-sm shadow-md flex items-center justify-center text-ink hover:bg-charcoal hover:text-white transition-all cursor-pointer"
+            className="absolute left-1 sm:left-6 top-1/2 -translate-y-1/2 z-30 h-8 w-8 sm:h-11 sm:w-11 rounded-full border border-border bg-paper/95 backdrop-blur-sm shadow-md flex items-center justify-center text-ink hover:bg-charcoal hover:text-white transition-all cursor-pointer text-xs sm:text-sm"
           >
-            <span className="text-sm font-mono">&larr;</span>
+            <span className="font-mono">&larr;</span>
           </button>
         )}
 
@@ -249,9 +249,9 @@ export default function ClothingRack({ products }: ClothingRackProps) {
             type="button"
             aria-label="Slide right on rail"
             onClick={() => handleScrollBy("right")}
-            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 h-10 w-10 sm:h-11 sm:w-11 rounded-full border border-border bg-paper/90 backdrop-blur-sm shadow-md flex items-center justify-center text-ink hover:bg-charcoal hover:text-white transition-all cursor-pointer"
+            className="absolute right-1 sm:right-6 top-1/2 -translate-y-1/2 z-30 h-8 w-8 sm:h-11 sm:w-11 rounded-full border border-border bg-paper/95 backdrop-blur-sm shadow-md flex items-center justify-center text-ink hover:bg-charcoal hover:text-white transition-all cursor-pointer text-xs sm:text-sm"
           >
-            <span className="text-sm font-mono">&rarr;</span>
+            <span className="font-mono">&rarr;</span>
           </button>
         )}
 
@@ -340,6 +340,19 @@ export default function ClothingRack({ products }: ClothingRackProps) {
                             </div>
                           </div>
                         </a>
+
+                        {/* Mobile Touch Caption (Always visible on mobile/tablets where mouse hover is absent) */}
+                        <div className="mt-2.5 flex flex-col items-center text-center px-1 md:hidden max-w-[170px] pointer-events-none select-none">
+                          <span className="text-[9px] font-mono tracking-wider uppercase text-ink-soft">
+                            {product.category}
+                          </span>
+                          <span className="type-display text-xs text-ink font-semibold line-clamp-1 mt-0.5">
+                            {product.title}
+                          </span>
+                          <span className="text-[11px] font-mono font-bold text-terracotta mt-0.5">
+                            ${product.price.toFixed(2)}
+                          </span>
+                        </div>
 
                         {/* Dynamic Floor Shadow */}
                         <span

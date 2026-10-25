@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Product } from "@/types";
 import { useCart } from "@/context/CartContext";
 
@@ -10,7 +10,24 @@ interface AddToCartButtonProps {
 
 export default function AddToCartButton({ product }: AddToCartButtonProps) {
   const [quantity, setQuantity] = useState(1);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { addItem, items } = useCart();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const isOutOfStock = product.stock <= 0;
   const currentInCart = items.find((i) => i.productId === product.id)?.quantity || 0;
@@ -39,7 +56,7 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div ref={containerRef} className="space-y-4">
       {/* Stock status indicator */}
       <div className="flex items-center justify-between text-xs font-mono">
         <div className="flex items-center gap-2">
@@ -123,6 +140,31 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
           </span>
         </button>
       </div>
+      {/* Sticky Mobile Purchase Bar (Appears when primary button scrolls out of view) */}
+      {showStickyBar && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-paper/95 backdrop-blur-md px-4 py-3 shadow-xl sm:hidden animate-in slide-in-from-bottom duration-200">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="type-display text-xs text-ink truncate font-semibold">
+                {product.title}
+              </p>
+              <p className="text-xs font-mono font-bold text-terracotta mt-0.5">
+                ${product.price.toFixed(2)} USD
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={isOutOfStock || remainingStock <= 0}
+              className="type-label h-11 px-5 bg-ink text-paper text-xs uppercase tracking-wider font-semibold shadow-sm hover:bg-ink-soft active:scale-95 transition-all flex items-center gap-1.5 shrink-0"
+            >
+              <span>Add to Bag</span>
+              <span>•</span>
+              <span>${(product.price * quantity).toFixed(2)}</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

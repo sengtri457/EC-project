@@ -360,9 +360,16 @@ body {
   transform: rotate(0) translateY(0);
 }
 
-@media (hover: none) {
+@media (hover: none) or (max-width: 767px) {
   .tag {
-    display: none;
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .rack-slider-track {
+    padding-inline: 1.5rem;
+    gap: 1.5rem;
   }
 }
 
@@ -601,5 +608,58 @@ body {
   .garment {
     transition-duration: 1ms !important;
     animation: none !important;
+  }
+}
+
+
+/* Print Optimization: Isolates ONLY the official invoice document */
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print,
+  [data-no-print],
+  .order-stepper-container,
+  #toast-container,
+  button,
+  .no-print-area {
+    display: none !important;
+  }
+
+  html, body, main {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
+  }
+
+  .printable-invoice-card {
+    border: 1px solid #d4d4d4 !important;
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    border-radius: 0 !important;
+    display: block !important;
+  }
+
+  .printable-invoice-card * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
   }
 }
