@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* Clothes™ Brand Architecture (docs/CLOTHES_BRAND_MASTER_KIT.md & docs/UI_SPEC_HANDOFF.md) */
   --canvas: #fafaf8;
   --charcoal: #1a1a1a;
   --surface: #f4f4f0;
   --border: #ececec;
   --border-strong: #d9d9d9;
   --placeholder: #9ca3af;
-  
+
   --accent-terracotta: #a35c49;
   --accent-terracotta-dark: #8c4e3e;
   --sage-forest: #2b5b3c;
@@ -23,10 +22,8 @@
   --backdrop-hi: #ffffff;
   --backdrop-lo: var(--surface);
 
-  /* Aliased brand accent & compatibility */
   --ctrl-red: var(--accent-terracotta);
 
-  /* Architectural Chrome Rack Materials */
   --chrome-hi: #ffffff;
   --chrome-mid: #d4d4d8;
   --chrome-lo: #71717a;
@@ -99,12 +96,10 @@ body {
 
 /* Studio Sweep Lighting Environment */
 .studio-sweep {
-  background: radial-gradient(
-      120% 70% at 50% 30%,
+  background: radial-gradient(120% 70% at 50% 30%,
       var(--backdrop-hi) 0%,
       var(--backdrop) 55%,
-      var(--backdrop-lo) 100%
-    ),
+      var(--backdrop-lo) 100%),
     var(--backdrop);
   isolation: isolate;
   position: relative;
@@ -142,14 +137,12 @@ body {
   left: 0;
   right: 0;
   top: var(--rail-y);
-  background: linear-gradient(
-    to bottom,
-    var(--chrome-mid) 0%,
-    var(--chrome-hi) 22%,
-    #cfcfcd 40%,
-    var(--chrome-lo) 72%,
-    #8a8a88 100%
-  );
+  background: linear-gradient(to bottom,
+      var(--chrome-mid) 0%,
+      var(--chrome-hi) 22%,
+      #cfcfcd 40%,
+      var(--chrome-lo) 72%,
+      #8a8a88 100%);
   border-radius: 9px;
   height: 9px;
   position: absolute;
@@ -171,19 +164,19 @@ body {
     padding-inline: 1rem;
     display: grid;
   }
-  .rack > .rail {
+
+  .rack>.rail {
     display: none;
   }
+
   .rack-cell:before {
     content: "";
-    background: linear-gradient(
-      to bottom,
-      var(--chrome-mid) 0%,
-      var(--chrome-hi) 22%,
-      #cfcfcd 40%,
-      var(--chrome-lo) 72%,
-      #8a8a88 100%
-    );
+    background: linear-gradient(to bottom,
+        var(--chrome-mid) 0%,
+        var(--chrome-hi) 22%,
+        #cfcfcd 40%,
+        var(--chrome-lo) 72%,
+        #8a8a88 100%);
     height: 8px;
     position: absolute;
     top: 0;
@@ -211,6 +204,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
@@ -408,12 +402,10 @@ body {
   transform: translate(-50%, -46%);
   width: min(880px, 94vw);
   height: 520px;
-  background: radial-gradient(
-    ellipse 65% 50% at 50% 50%,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 252, 248, 0.5) 45%,
-    rgba(250, 250, 248, 0) 75%
-  );
+  background: radial-gradient(ellipse 65% 50% at 50% 50%,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 252, 248, 0.5) 45%,
+      rgba(250, 250, 248, 0) 75%);
   filter: blur(28px);
   pointer-events: none;
   z-index: 0;
@@ -483,7 +475,7 @@ body {
   display: inline-block;
 }
 
-.rack > .rail {
+.rack>.rail {
   transform-origin: 50%;
   animation: intro-rail 1s var(--ease-out-expo) 0.45s both;
 }
@@ -494,6 +486,7 @@ body {
     clip-path: inset(0 100% 0 0);
     translate: -0.75rem;
   }
+
   100% {
     opacity: 1;
     clip-path: inset(0);
@@ -507,6 +500,7 @@ body {
     clip-path: inset(0 0 0 100%);
     translate: 0.75rem;
   }
+
   100% {
     opacity: 1;
     clip-path: inset(0);
@@ -520,6 +514,7 @@ body {
     rotate: -45deg;
     scale: 0.3;
   }
+
   100% {
     opacity: 1;
     rotate: none;
@@ -533,6 +528,7 @@ body {
     clip-path: inset(-0.2em -0.1em 100%);
     translate: 0 0.55em;
   }
+
   100% {
     opacity: 1;
     clip-path: inset(-0.2em -0.1em);
@@ -544,6 +540,7 @@ body {
   0% {
     letter-spacing: 0.06em;
   }
+
   100% {
     letter-spacing: -0.01em;
   }
@@ -555,6 +552,7 @@ body {
     filter: blur(6px);
     translate: 0 0.6rem;
   }
+
   100% {
     opacity: 1;
     filter: blur(0);
@@ -567,6 +565,7 @@ body {
     opacity: 0.4;
     scale: 0 1;
   }
+
   100% {
     opacity: 1;
     scale: 1;
@@ -578,6 +577,7 @@ body {
     opacity: 0;
     translate: 0 -2.5rem;
   }
+
   100% {
     opacity: 1;
     translate: 0;
@@ -585,24 +585,28 @@ body {
 }
 
 @media (max-width: 767px) {
+
   .intro,
   .intro-title,
   .intro-word {
     animation: none;
   }
-  .rack > .rail {
+
+  .rack>.rail {
     animation-delay: 0s;
   }
+
   .rack-cell {
     animation-delay: calc(0.25s + var(--i, 0) * 0.11s);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .intro,
   .intro-title,
   .intro-word,
-  .rack > .rail,
+  .rack>.rail,
   .rack-cell,
   .tag,
   .garment {
@@ -614,6 +618,7 @@ body {
 
 /* Print Optimization: Isolates ONLY the official invoice document */
 @media print {
+
   header,
   footer,
   nav,
@@ -626,7 +631,9 @@ body {
     display: none !important;
   }
 
-  html, body, main {
+  html,
+  body,
+  main {
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #111111 !important;

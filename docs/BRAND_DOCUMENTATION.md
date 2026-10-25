@@ -172,17 +172,17 @@ The visual atmosphere is defined by **Warm Earth Minimalist Editorial**.
 ```
 
 1. **First Impression (The Preloader Experience):**
-    - A delicate, cinematic opening screen displaying `"W E L C O M E"` in typewriter cadence with the Terracotta signature accent. Sets the expectation of an intentional luxury shopping experience.
+   - A delicate, cinematic opening screen displaying `"W E L C O M E"` in typewriter cadence with the Terracotta signature accent. Sets the expectation of an intentional luxury shopping experience.
 2. **The Homepage Editorial:**
-    - Instead of aggressive product dumps, the customer is greeted by an editorial story: _"Minimalism in Everyday Wear"_ supported by the Brand Carousel and curated Category Pills.
+   - Instead of aggressive product dumps, the customer is greeted by an editorial story: _"Minimalism in Everyday Wear"_ supported by the Brand Carousel and curated Category Pills.
 3. **The Trust Bar:**
-    - Prominently integrated into the store architecture:
-        - _Complimentary Shipping over \$100_
-        - _30-Day Hassle-Free Returns_
-        - _Encrypted Secure Checkout_
-        - _Sustainably Sourced Fabrics_
+   - Prominently integrated into the store architecture:
+     - _Complimentary Shipping over \$100_
+     - _30-Day Hassle-Free Returns_
+     - _Encrypted Secure Checkout_
+     - _Sustainably Sourced Fabrics_
 4. **Frictionless Commerce:**
-    - Seamless bag management, instant localized mobile payments (Bakong KHQR and digital wallets), and transparent status tracking.
+   - Seamless bag management, instant localized mobile payments (Bakong KHQR and digital wallets), and transparent status tracking.
 
 ---
 
