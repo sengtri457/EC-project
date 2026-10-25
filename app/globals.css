@@ -42,6 +42,7 @@
   --color-backdrop-hi: var(--backdrop-hi);
   --color-backdrop-lo: var(--backdrop-lo);
   --color-canvas: var(--canvas);
+  --color-charcoal: var(--charcoal);
   --color-surface: var(--surface);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
@@ -123,7 +124,7 @@ body {
 
 /* Physical Clothing Rack */
 .rack {
-  --g: min(0.4px, calc((100vw - 4rem) / 2200), calc((100svh - 450px) / 1130));
+  --g: clamp(0.38px, calc((100vw - 6rem) / 2200), 0.44px);
   --rail-y: 0.75rem;
   width: 100vw;
   padding-top: var(--rail-y);
@@ -159,12 +160,15 @@ body {
   justify-content: center;
   align-items: stretch;
   display: flex;
+  gap: clamp(1.25rem, 3vw, 3.5rem);
 }
 
 @media (max-width: 767px) {
   .rack-row {
     grid-template-columns: 1fr 1fr;
-    row-gap: 2.25rem;
+    row-gap: 2.5rem;
+    column-gap: 1.5rem;
+    padding-inline: 1rem;
     display: grid;
   }
   .rack > .rail {
@@ -190,7 +194,7 @@ body {
 }
 
 .rack-cell {
-  margin-inline: calc(var(--g) * -48);
+  margin-inline: 0;
   padding-bottom: calc(var(--g) * 80 + 1.25rem);
   animation: hang-on 0.9s var(--ease-out-expo) both;
   animation-delay: calc(0.75s + var(--i, 0) * 0.11s);
@@ -198,6 +202,41 @@ body {
   align-items: center;
   display: flex;
   position: relative;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
+
+/* Utility: Hide scrollbar while preserving full touch/wheel momentum scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Physical Sliding Clothes Rack */
+.rack-slider-viewport {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  position: relative;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 0.25rem;
+}
+
+.rack-slider-track {
+  display: flex;
+  align-items: stretch;
+  min-width: max-content;
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+  padding-inline: max(2rem, calc((100vw - 1100px) / 2));
+}
+
+.rack[data-switched="true"] .rack-cell {
+  animation-delay: calc(0.04s + var(--i, 0) * 0.08s);
 }
 
 .rack-cell:hover,
@@ -247,12 +286,22 @@ body {
 
 .garment-img {
   width: calc(var(--w, 680) * var(--g));
+  min-width: clamp(210px, 18vw, 275px);
   user-select: none;
   -webkit-user-drag: none;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.18));
   max-width: none;
   height: auto;
   display: block;
+}
+
+@media (max-width: 767px) {
+  .garment-img {
+    min-width: 0;
+    width: 100%;
+    max-width: 220px;
+    margin-inline: auto;
+  }
 }
 
 .garment:focus-visible .garment-img {
@@ -311,9 +360,16 @@ body {
   transform: rotate(0) translateY(0);
 }
 
-@media (hover: none) {
+@media (hover: none) or (max-width: 767px) {
   .tag {
-    display: none;
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .rack-slider-track {
+    padding-inline: 1.5rem;
+    gap: 1.5rem;
   }
 }
 
@@ -342,6 +398,25 @@ body {
     height: 1rem;
     bottom: 0.25rem;
   }
+}
+
+/* Studio Photographic Lighting Backdrop */
+.studio-spotlight-backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -46%);
+  width: min(880px, 94vw);
+  height: 520px;
+  background: radial-gradient(
+    ellipse 65% 50% at 50% 50%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 252, 248, 0.5) 45%,
+    rgba(250, 250, 248, 0) 75%
+  );
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Slip Form Fields (Minimalist Underline Input) */
@@ -533,5 +608,58 @@ body {
   .garment {
     transition-duration: 1ms !important;
     animation: none !important;
+  }
+}
+
+
+/* Print Optimization: Isolates ONLY the official invoice document */
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print,
+  [data-no-print],
+  .order-stepper-container,
+  #toast-container,
+  button,
+  .no-print-area {
+    display: none !important;
+  }
+
+  html, body, main {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
+  }
+
+  .printable-invoice-card {
+    border: 1px solid #d4d4d4 !important;
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    border-radius: 0 !important;
+    display: block !important;
+  }
+
+  .printable-invoice-card * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
   }
 }

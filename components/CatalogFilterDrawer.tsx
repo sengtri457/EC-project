@@ -173,14 +173,14 @@ export default function CatalogFilterDrawer({
         </div>
 
         {/* Right: Search & Sort */}
-        <div className="flex items-center gap-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <div className="relative flex-1 sm:w-56">
             <input
               type="text"
               placeholder="Filter pieces…"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="slip-field h-10 text-xs w-44 sm:w-56 pl-0"
+              className="slip-field h-10 text-xs w-full pl-0"
             />
             {searchQuery && (
               <button
@@ -192,14 +192,14 @@ export default function CatalogFilterDrawer({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs font-mono text-ink-soft uppercase hidden sm:inline">
               Sort:
             </span>
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value as any)}
-              className="h-10 px-2.5 text-xs font-mono border border-border-strong bg-paper text-ink outline-none cursor-pointer hover:border-ink transition-colors"
+              className="h-10 px-2.5 text-xs font-mono border border-border-strong bg-paper text-ink outline-none cursor-pointer hover:border-ink transition-colors w-full sm:w-auto"
             >
               <option value="featured">Featured</option>
               <option value="price-asc">Price: Low → High</option>
@@ -214,11 +214,11 @@ export default function CatalogFilterDrawer({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-end sm:items-start justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-6 overflow-y-auto animate-in fade-in duration-200"
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative w-full max-w-4xl bg-paper border-2 border-ink shadow-2xl my-8 p-6 sm:p-8 text-ink"
+            className="relative w-full max-w-4xl bg-paper border-t-2 sm:border-2 border-ink shadow-2xl my-0 sm:my-8 p-5 sm:p-8 text-ink rounded-t-xl sm:rounded-none max-h-[88vh] sm:max-h-none overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}
