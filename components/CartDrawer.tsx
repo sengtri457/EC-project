@@ -10,11 +10,13 @@ export default function CartDrawer() {
   const {
     items,
     itemCount,
-    subtotal,
     isDrawerOpen,
     closeDrawer,
     updateQty,
     removeItem,
+    toggleSelectItem,
+    selectedItemCount,
+    selectedSubtotal,
   } = useCart();
 
   // Close on ESC key
@@ -60,7 +62,7 @@ export default function CartDrawer() {
               Shopping Bag
             </span>
             <span className="font-mono text-xs text-ink-soft">
-              ({itemCount} {itemCount === 1 ? "item" : "items"})
+              ({selectedItemCount}/{itemCount} selected)
             </span>
           </div>
           <button
@@ -82,11 +84,11 @@ export default function CartDrawer() {
 
         {/* Free shipping banner */}
         <div className="bg-canvas px-6 py-2.5 text-center text-[11px] font-mono text-ink-soft border-b border-border">
-          {subtotal >= 30 ? (
+          {selectedSubtotal >= 30 ? (
             <span className="text-forest font-medium">✓ You qualify for Free Delivery in Phnom Penh</span>
           ) : (
             <span>
-              Add <strong className="text-ink font-semibold">${(30 - subtotal).toFixed(2)}</strong> more for free delivery in Phnom Penh
+              Add <strong className="text-ink font-semibold">${(30 - selectedSubtotal).toFixed(2)}</strong> more for free delivery in Phnom Penh
             </span>
           )}
         </div>
@@ -99,73 +101,102 @@ export default function CartDrawer() {
               <p className="mt-2 text-xs font-mono text-ink-soft">Discover our catalog and select your pieces.</p>
               <button
                 onClick={closeDrawer}
-                className="mt-6 border border-ink px-5 py-2 text-xs font-mono uppercase tracking-wider text-ink hover:bg-ink hover:text-paper transition-all cursor-pointer"
+                className="mt-6 border border-ink px-6 py-2.5 text-xs font-mono uppercase tracking-wider text-ink hover:bg-canvas transition-colors cursor-pointer"
               >
                 Continue Browsing
               </button>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.productId} className="py-4 flex gap-4">
-                <div className="relative h-20 w-20 shrink-0 border border-border bg-backdrop p-2 flex items-center justify-center">
-                  <Image
-                    src={item.thumbnail}
-                    alt={item.title}
-                    fill
-                    sizes="80px"
-                    className="object-contain p-1"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-start gap-2">
-                      <h4 className="text-xs font-medium text-ink line-clamp-1">{item.title}</h4>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="text-ink-soft hover:text-ctrl-red transition-colors cursor-pointer p-0.5"
-                        title="Remove piece"
-                        aria-label={`Remove ${item.title}`}
-                      >
-                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                    <span className="font-mono text-xs text-ink-soft mt-0.5 block">
-                      ${item.price.toFixed(2)}
-                    </span>
-                  </div>
+            items.map((item) => {
+              const isSelected = item.selected !== false;
+              return (
+                <div
+                  key={item.productId}
+                  className={`flex items-start gap-3 py-4 transition-opacity ${
+                    isSelected ? "opacity-100" : "opacity-60"
+                  }`}
+                >
+                  {/* Item selection checkbox */}
+                  <label
+                    className="cursor-pointer pt-1"
+                    title={isSelected ? "Unselect for checkout" : "Select for checkout"}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleSelectItem(item.productId)}
+                      className="h-4 w-4 rounded-none accent-ink cursor-pointer"
+                      aria-label={`Select ${item.title}`}
+                    />
+                  </label>
 
-                  <div className="flex items-center justify-between mt-3">
-                    <div className="flex items-center border border-border bg-paper">
-                      <button
-                        type="button"
-                        onClick={() => updateQty(item.productId, item.quantity - 1)}
-                        className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
-                        aria-label="Decrease quantity"
-                      >
-                        -
-                      </button>
-                      <span className="h-7 w-8 flex items-center justify-center text-xs font-mono text-ink border-x border-border">
-                        {item.quantity}
+                  <div className="relative h-20 w-20 shrink-0 border border-border bg-backdrop p-2 flex items-center justify-center">
+                    <Image
+                      src={item.thumbnail}
+                      alt={item.title}
+                      fill
+                      sizes="80px"
+                      className="object-contain p-1"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between min-w-0">
+                    <div>
+                      <div className="flex justify-between items-start gap-2">
+                        <h4 className="text-xs font-medium text-ink line-clamp-1">{item.title}</h4>
+                        <button
+                          onClick={() => removeItem(item.productId)}
+                          className="text-ink-soft hover:text-ctrl-red transition-colors cursor-pointer p-0.5"
+                          title="Remove piece"
+                          aria-label={`Remove ${item.title}`}
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="font-mono text-xs text-ink-soft">
+                          ${item.price.toFixed(2)}
+                        </span>
+                        {!isSelected && (
+                          <span className="text-[9px] font-mono uppercase bg-backdrop px-1 text-ink-soft border border-border">
+                            Unselected
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center border border-border bg-paper">
+                        <button
+                          type="button"
+                          onClick={() => updateQty(item.productId, item.quantity - 1)}
+                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
+                          aria-label="Decrease quantity"
+                        >
+                          -
+                        </button>
+                        <span className="h-7 w-8 flex items-center justify-center text-xs font-mono text-ink border-x border-border">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => updateQty(item.productId, item.quantity + 1)}
+                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      <span className="font-mono text-xs font-semibold text-ink">
+                        ${(item.price * item.quantity).toFixed(2)}
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => updateQty(item.productId, item.quantity + 1)}
-                        className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
                     </div>
-
-                    <span className="font-mono text-xs font-semibold text-ink">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </span>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -174,10 +205,10 @@ export default function CartDrawer() {
           <div className="border-t border-border bg-paper p-6 space-y-4">
             <div className="space-y-1.5 font-mono text-xs">
               <div className="flex justify-between text-ink-soft">
-                <span>Subtotal</span>
+                <span>Selected Subtotal</span>
                 <div className="text-right">
-                  <span className="text-ink font-semibold">${subtotal.toFixed(2)} USD</span>
-                  <span className="text-[10px] text-ink-soft block">≈ {toKhr(subtotal)}</span>
+                  <span className="text-ink font-semibold">${selectedSubtotal.toFixed(2)} USD</span>
+                  <span className="text-[10px] text-ink-soft block">≈ {toKhr(selectedSubtotal)}</span>
                 </div>
               </div>
               <div className="flex justify-between text-ink-soft text-[11px]">
@@ -194,13 +225,23 @@ export default function CartDrawer() {
               >
                 Review Bag
               </Link>
-              <Link
-                href="/checkout"
-                onClick={closeDrawer}
-                className="type-label flex items-center justify-center bg-ink py-3 text-xs uppercase tracking-widest text-paper hover:bg-ink-soft transition-colors text-center font-semibold"
-              >
-                Checkout
-              </Link>
+              {selectedItemCount > 0 ? (
+                <Link
+                  href="/checkout"
+                  onClick={closeDrawer}
+                  className="type-label flex items-center justify-center bg-ink py-3 text-xs uppercase tracking-widest text-paper hover:bg-ink-soft transition-colors text-center font-semibold"
+                >
+                  Checkout ({selectedItemCount})
+                </Link>
+              ) : (
+                <Link
+                  href="/cart"
+                  onClick={closeDrawer}
+                  className="type-label flex items-center justify-center bg-border py-3 text-xs uppercase tracking-widest text-ink-soft hover:bg-border-strong transition-colors text-center font-semibold"
+                >
+                  Select Items
+                </Link>
+              )}
             </div>
           </div>
         )}

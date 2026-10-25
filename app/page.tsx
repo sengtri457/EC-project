@@ -25,8 +25,8 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-ink">Same-Day Express</p>
-              <p className="text-ink-soft text-[11px]">1–3 hours in Phnom Penh</p>
+              <p className="font-semibold text-ink">Phnom Penh Express</p>
+              <p className="text-ink-soft text-[11px]">1–3 hrs in PP · 24-48h nationwide</p>
             </div>
           </div>
 
@@ -38,7 +38,7 @@ export default function Home() {
             </div>
             <div>
               <p className="font-semibold text-ink">KHQR &amp; Cash on Delivery</p>
-              <p className="text-ink-soft text-[11px]">ABA, Wing, or doorstep cash</p>
+              <p className="text-ink-soft text-[11px]">ABA, Bakong &amp; doorstep cash</p>
             </div>
           </div>
 
@@ -49,8 +49,8 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-ink">30-Day Doorstep Swap</p>
-              <p className="text-ink-soft text-[11px]">Free rider size exchange</p>
+              <p className="font-semibold text-ink">Doorstep Size Exchange</p>
+              <p className="text-ink-soft text-[11px]">Easy rider exchange if fit isn&apos;t 100%</p>
             </div>
           </div>
 
@@ -61,8 +61,8 @@ export default function Home() {
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-ink">Conscious Materiality</p>
-              <p className="text-ink-soft text-[11px]">Organic cotton &amp; pure linen</p>
+              <p className="font-semibold text-ink">Lightweight &amp; Breathable</p>
+              <p className="text-ink-soft text-[11px]">100% organic cotton &amp; natural linen</p>
             </div>
           </div>
         </div>
@@ -105,11 +105,11 @@ export default function Home() {
                   Menswear
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Relaxed blazers, heavyweight boxy tees, and tailored denim.
+                  Boxy oversized tees, breathable shirts, relaxed trousers, and denim.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
-                <span className="text-ink-soft">14 Silhouettes</span>
+                <span className="text-ink-soft">14 Styles</span>
                 <span className="text-ink font-semibold group-hover:translate-x-1 transition-transform">
                   Shop Men &rarr;
                 </span>
@@ -129,11 +129,11 @@ export default function Home() {
                   Womenswear
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Washed linen shirts, fluid knit cardigans, and drape layers.
+                  Washed linen shirts, effortless everyday tops, and relaxed trousers.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
-                <span className="text-ink-soft">12 Silhouettes</span>
+                <span className="text-ink-soft">12 Styles</span>
                 <span className="text-ink font-semibold group-hover:translate-x-1 transition-transform">
                   Shop Women &rarr;
                 </span>
@@ -153,7 +153,7 @@ export default function Home() {
                   Shoes &amp; Trainers
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Vulcanized sole sneakers and low-profile lifestyle trainers.
+                  Lightweight everyday sneakers and versatile low-profile trainers.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
@@ -171,13 +171,13 @@ export default function Home() {
             >
               <div>
                 <span className="text-[10px] font-mono text-ink-soft uppercase tracking-wider block">
-                  Finishing Touches
+                  Daily Accessories
                 </span>
                 <h3 className="type-display text-xl text-ink font-semibold mt-1 group-hover:underline">
                   Accessories
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Structured canvas tote bags, sterling rings, and caps.
+                  Durable canvas totes, minimal caps, and everyday essentials.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
@@ -191,16 +191,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Trending Silhouettes / Best Sellers Row */}
+      {/* 5. Trending in Cambodia / Best Sellers Row */}
       <section className="bg-paper border-b border-border py-14 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-ink pb-3 mb-6 gap-2">
             <div>
               <span className="type-label text-[11px] uppercase tracking-widest text-ink-soft block">
-                Trending in Cambodia
+                Popular in Phnom Penh
               </span>
               <h2 className="type-display text-2xl sm:text-3xl font-semibold text-ink mt-0.5">
-                Most Wanted Silhouettes
+                Most Loved This Week
               </h2>
             </div>
             <Link
@@ -266,21 +266,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. RESIZED & STREAMLINED: Philosophy & Craft */}
+      {/* 6. Fabric & Climate Guide */}
       <section className="bg-canvas border-b border-border py-14 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          {/* Section Header: Compact & Elegant */}
+          {/* Section Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b-2 border-ink pb-3 mb-6 gap-2">
             <div>
               <span className="type-label text-[11px] uppercase tracking-widest text-ink-soft block">
-                Philosophy &amp; Craft
+                Fabric &amp; Climate Guide
               </span>
               <h2 className="type-display text-2xl sm:text-3xl font-semibold text-ink mt-0.5">
-                Conscious Materiality
+                Crafted for the Climate
               </h2>
             </div>
             <p className="text-xs font-mono text-ink-soft max-w-md">
-              Tactile natural textiles engineered for breathability and lasting form.
+              Fabrics selected specifically to stay cool outdoors and comfortable in air-conditioned spaces.
             </p>
           </div>
 
@@ -297,10 +297,10 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="type-display text-lg font-semibold text-ink mt-2">
-                  French Terry Cotton
+                  Heavyweight Organic Cotton
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Dense loopback interior wicks moisture while maintaining a crisp, structured drape in tropical humidity.
+                  Crisp boxy structure that holds its shape all day, pre-shrunk so it stays true to size after washing.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
@@ -323,7 +323,7 @@ export default function Home() {
                   Stone-Washed Linen
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Pure flax weave allowing continuous airflow. Softens with each wash while holding its silhouette.
+                  Pure flax weave with an open texture that allows natural airflow on warm, sunny afternoons.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
@@ -343,10 +343,10 @@ export default function Home() {
                   </span>
                 </div>
                 <h3 className="type-display text-lg font-semibold text-ink mt-2">
-                  Raw Selvedge Denim
+                  Soft-Washed Selvedge Denim
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Shuttle-loom woven with classic red-line edge. Molds naturally and develops personalized wear fades.
+                  Durable shuttle-loom denim pre-softened for immediate comfort while keeping a sharp, clean drape.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
@@ -371,7 +371,7 @@ export default function Home() {
               </h2>
             </div>
             <p className="text-xs font-mono text-ink-soft">
-              Everyday styling from Phnom Penh, Siem Reap, and Battambang.
+              Real reviews from customers in Phnom Penh, Siem Reap, and across Cambodia.
             </p>
           </div>
 
@@ -381,7 +381,7 @@ export default function Home() {
                 Phnom Penh &bull; BKK1
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;The raw denim jacket has the exact structured drape I wanted without feeling stiff in the heat. Arrived in 2 hours via express rider.&rdquo;
+                &ldquo;The jacket has the exact structured drape I wanted without feeling stiff in the heat. Arrived in 2 hours via express rider.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Sophea C.</span>
@@ -394,7 +394,7 @@ export default function Home() {
                 Siem Reap &bull; Wat Bo
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;Ordered via KHQR scan. The packaging was immaculate and the waffle thermal fabric is so comfortable. Telegram support was fast.&rdquo;
+                &ldquo;Ordered via KHQR scan. The packaging was immaculate and the waffle fabric is so comfortable. Telegram support was fast.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Vireak R.</span>
@@ -407,13 +407,30 @@ export default function Home() {
                 Phnom Penh &bull; Tuol Kouk
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;Clean minimalist design with substantial fabric weight. The 30-day doorstep exchange gave me complete confidence.&rdquo;
+                &ldquo;Clean minimalist design with substantial fabric weight. The doorstep size exchange gave me complete confidence.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Dara K.</span>
                 <span className="text-ink-soft">Cropped Zip Hoodie</span>
               </div>
             </div>
+          </div>
+
+          {/* Direct Telegram Support Callout */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between border border-border bg-canvas p-4 text-xs font-mono gap-3">
+            <div className="flex items-center gap-2.5 text-ink">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Questions about sizing or fabrics? Our team is live on Telegram.</span>
+            </div>
+            <a
+              href="https://t.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 border border-ink bg-ink text-paper px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-wider hover:bg-ink-soft transition-colors"
+            >
+              <span>Chat on Telegram</span>
+              <span>&rarr;</span>
+            </a>
           </div>
         </div>
       </section>
@@ -425,10 +442,10 @@ export default function Home() {
             Member Archive
           </span>
           <h2 className="type-display text-xl sm:text-2xl font-semibold text-ink mt-1.5">
-            Stay Ahead of the Next Drop
+            Get 10% Off Your First Order
           </h2>
           <p className="text-xs font-mono text-ink-soft mt-1.5 max-w-sm mx-auto leading-relaxed">
-            Join our private circle for early drop access, private warehouse sales in Phnom Penh, and 10% off your first order.
+            Join our member list for drop previews, private sales in Phnom Penh, and 10% off your first checkout.
           </p>
 
           <NewsletterForm />

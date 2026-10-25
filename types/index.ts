@@ -42,6 +42,7 @@ export type CartItem = {
   price: number;
   thumbnail: string;
   quantity: number;
+  selected?: boolean;
 };
 
 export type ShippingMethod =
