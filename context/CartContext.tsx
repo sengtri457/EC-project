@@ -25,6 +25,10 @@ type CartAction =
   | { type: "ADD"; payload: { item: Omit<CartItem, "quantity">; quantity: number; maxStock?: number } }
   | { type: "UPDATE_QTY"; payload: { productId: number; quantity: number; maxStock?: number } }
   | { type: "REMOVE"; payload: { productId: number } }
+  | { type: "TOGGLE_SELECT"; payload: { productId: number } }
+  | { type: "SET_SELECT"; payload: { productId: number; selected: boolean } }
+  | { type: "TOGGLE_SELECT_ALL"; payload: { selected?: boolean } }
+  | { type: "REMOVE_SELECTED" }
   | { type: "CLEAR" };
 
 function cartReducer(state: CartState, action: CartAction): CartState {
@@ -32,7 +36,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "LOAD":
       return {
         ...state,
-        items: action.payload,
+        items: action.payload.map((item) => ({
+          ...item,
+          selected: item.selected ?? true,
+        })),
         isLoaded: true,
       };
 
@@ -51,6 +58,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         nextItems[existingIndex] = {
           ...nextItems[existingIndex],
           quantity: newQty,
+          selected: true,
         };
         return { ...state, items: nextItems };
       }
@@ -70,6 +78,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
             price: item.price,
             thumbnail: item.thumbnail,
             quantity: initialQty,
+            selected: true,
           },
         ],
       };
@@ -104,6 +113,49 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       };
     }
 
+    case "TOGGLE_SELECT": {
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.productId === action.payload.productId
+            ? { ...item, selected: item.selected === false ? true : false }
+            : item
+        ),
+      };
+    }
+
+    case "SET_SELECT": {
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.productId === action.payload.productId
+            ? { ...item, selected: action.payload.selected }
+            : item
+        ),
+      };
+    }
+
+    case "TOGGLE_SELECT_ALL": {
+      const areAllSelected =
+        state.items.length > 0 && state.items.every((i) => i.selected !== false);
+      const targetState =
+        action.payload.selected !== undefined ? action.payload.selected : !areAllSelected;
+      return {
+        ...state,
+        items: state.items.map((item) => ({
+          ...item,
+          selected: targetState,
+        })),
+      };
+    }
+
+    case "REMOVE_SELECTED": {
+      return {
+        ...state,
+        items: state.items.filter((item) => item.selected === false),
+      };
+    }
+
     case "CLEAR": {
       return {
         ...state,
@@ -123,6 +175,19 @@ interface CartContextType {
   removeItem: (productId: number) => void;
   updateQty: (productId: number, quantity: number, maxStock?: number) => void;
   clearCart: () => void;
+  // Selection
+  toggleSelectItem: (productId: number) => void;
+  setItemSelected: (productId: number, selected: boolean) => void;
+  toggleSelectAll: (selected?: boolean) => void;
+  removeSelectedItems: () => void;
+  selectedItems: CartItem[];
+  selectedItemCount: number;
+  selectedSubtotal: number;
+  selectedTax: number;
+  selectedTotal: number;
+  isAllSelected: boolean;
+  hasSelectedItems: boolean;
+  // Bag Totals
   itemCount: number;
   subtotal: number;
   tax: number;
@@ -211,12 +276,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "CLEAR" });
   }, []);
 
+  const toggleSelectItem = useCallback((productId: number) => {
+    dispatch({ type: "TOGGLE_SELECT", payload: { productId } });
+  }, []);
+
+  const setItemSelected = useCallback((productId: number, selected: boolean) => {
+    dispatch({ type: "SET_SELECT", payload: { productId, selected } });
+  }, []);
+
+  const toggleSelectAll = useCallback((selected?: boolean) => {
+    dispatch({ type: "TOGGLE_SELECT_ALL", payload: { selected } });
+  }, []);
+
+  const removeSelectedItems = useCallback(() => {
+    dispatch({ type: "REMOVE_SELECTED" });
+  }, []);
+
+  // Full cart counts
   const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = Number(
     state.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)
   );
   const tax = Number((subtotal * 0.1).toFixed(2));
   const total = Number((subtotal + tax).toFixed(2));
+
+  // Selected counts
+  const selectedItems = state.items.filter((item) => item.selected !== false);
+  const selectedItemCount = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+  const selectedSubtotal = Number(
+    selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)
+  );
+  const selectedTax = Number((selectedSubtotal * 0.1).toFixed(2));
+  const selectedTotal = Number((selectedSubtotal + selectedTax).toFixed(2));
+  const isAllSelected = state.items.length > 0 && state.items.every((item) => item.selected !== false);
+  const hasSelectedItems = selectedItems.length > 0;
 
   return (
     <CartContext.Provider
@@ -227,6 +320,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         removeItem,
         updateQty,
         clearCart,
+        toggleSelectItem,
+        setItemSelected,
+        toggleSelectAll,
+        removeSelectedItems,
+        selectedItems,
+        selectedItemCount,
+        selectedSubtotal,
+        selectedTax,
+        selectedTotal,
+        isAllSelected,
+        hasSelectedItems,
         itemCount,
         subtotal,
         tax,

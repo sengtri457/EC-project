@@ -44,10 +44,10 @@ export default function PiecesList({ products }: PiecesListProps) {
     >
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b-2 border-ink pb-5">
         <h2 id="pieces-title" className="type-display text-[clamp(2rem,5vw,3.75rem)]">
-          The Capsule
+          The Core Wardrobe
         </h2>
         <p className="max-w-[36ch] text-sm text-ink-soft leading-relaxed">
-          Tactile fabrics and refined silhouettes designed for effortless versatility. Mindful essentials crafted to endure.
+          Versatile essentials designed to mix, match, and stay crisp all day—crafted for all-day comfort in tropical weather.
         </p>
       </div>
 

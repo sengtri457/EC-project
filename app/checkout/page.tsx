@@ -16,7 +16,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { items, isLoaded, itemCount, subtotal, clearCart } = useCart();
+  const { isLoaded, selectedItems: items, selectedItemCount: itemCount, selectedSubtotal: subtotal, removeSelectedItems } = useCart();
   const { user, loginWithDemo } = useAuth();
 
   const [formData, setFormData] = useState<CheckoutFormState>({
@@ -207,7 +207,7 @@ export default function CheckoutPage() {
 
     setIsSubmitted(true);
     saveOrder(newOrder);
-    clearCart();
+    removeSelectedItems();
 
     startTransition(() => {
       router.push(`/invoice/${orderId}`);

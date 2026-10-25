@@ -181,7 +181,7 @@ export default function ClothingRack({ products }: ClothingRackProps) {
 
         {/* Display Title */}
         <h1 className="type-display text-[clamp(2rem,4vw,3.5rem)] font-normal tracking-tight text-ink text-balance leading-[1.1]">
-          Minimalism In <span className="block sm:inline">Everyday Wear</span>
+          Minimalism for <span className="block sm:inline">Everyday Living</span>
         </h1>
 
         {/* Dynamic Editorial Subtitle */}
@@ -373,7 +373,7 @@ export default function ClothingRack({ products }: ClothingRackProps) {
       {/* Atmospheric Footer Hints */}
       <footer className="flex flex-col items-center justify-center pb-2 pt-2 gap-2 relative z-10">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-paper/90 px-3.5 py-1 shadow-xs text-[11px] font-mono text-ink-soft">
-          <span>Slide Rail Horizontally · Tap Tabs to Jump</span>
+          <span>&larr; Drag or swipe rail to explore pieces &rarr;</span>
         </div>
 
         <a

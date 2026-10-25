@@ -6,6 +6,7 @@ interface OrderSummaryProps {
   total: number;
   itemCount: number;
   showCheckoutButton?: boolean;
+  disabledCheckout?: boolean;
 }
 
 export default function OrderSummary({
@@ -14,9 +15,13 @@ export default function OrderSummary({
   total,
   itemCount,
   showCheckoutButton = false,
+  disabledCheckout = false,
 }: OrderSummaryProps) {
   const freeShippingThreshold = 100;
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+  const progressPercent =
+    subtotal > 0 ? Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100)) : 0;
+
+  const isDisabled = disabledCheckout || itemCount === 0;
 
   return (
     <div className="border border-border bg-paper p-6 shadow-sm">
@@ -30,9 +35,13 @@ export default function OrderSummary({
               <span className="text-sage font-semibold flex items-center gap-1">
                 <span>✓</span> Complimentary Standard Shipping Unlocked
               </span>
-            ) : (
+            ) : subtotal > 0 ? (
               <span>
                 Add <span className="font-bold text-ctrl-red font-mono">${(freeShippingThreshold - subtotal).toFixed(2)}</span> for complimentary shipping
+              </span>
+            ) : (
+              <span className="text-ink-soft">
+                Add $100.00 for complimentary shipping
               </span>
             )}
           </span>
@@ -62,7 +71,11 @@ export default function OrderSummary({
         <div className="flex justify-between text-ink-soft">
           <span>Courier Shipping</span>
           <span className="font-semibold text-ink">
-            {subtotal >= freeShippingThreshold ? "Complimentary" : "$15.00"}
+            {subtotal === 0
+              ? "$0.00"
+              : subtotal >= freeShippingThreshold
+              ? "Complimentary"
+              : "$15.00"}
           </span>
         </div>
 
@@ -81,12 +94,22 @@ export default function OrderSummary({
 
       {showCheckoutButton && (
         <div className="mt-6">
-          <Link
-            href="/checkout"
-            className="type-label flex h-13 w-full items-center justify-center bg-ink py-3.5 text-center text-xs text-paper uppercase tracking-widest shadow-sm transition-all hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ctrl-red"
-          >
-            <span>Proceed to Express Checkout</span>
-          </Link>
+          {isDisabled ? (
+            <button
+              type="button"
+              disabled
+              className="type-label flex h-13 w-full items-center justify-center bg-border py-3.5 text-center text-xs uppercase tracking-widest text-ink-soft/70 cursor-not-allowed select-none font-semibold"
+            >
+              <span>Select Items to Checkout</span>
+            </button>
+          ) : (
+            <Link
+              href="/checkout"
+              className="type-label flex h-13 w-full items-center justify-center bg-ink py-3.5 text-center text-xs text-paper uppercase tracking-widest shadow-sm transition-all hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ctrl-red"
+            >
+              <span>Proceed to Express Checkout ({itemCount})</span>
+            </Link>
+          )}
         </div>
       )}
     </div>

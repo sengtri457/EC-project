@@ -7,7 +7,18 @@ import OrderSummary from "@/components/OrderSummary";
 import OrderStepper from "@/components/OrderStepper";
 
 export default function CartPage() {
-  const { items, isLoaded, itemCount, subtotal, tax, total, clearCart } = useCart();
+  const {
+    items,
+    isLoaded,
+    itemCount,
+    clearCart,
+    selectedItemCount,
+    selectedSubtotal,
+    selectedTax,
+    selectedTotal,
+    isAllSelected,
+    toggleSelectAll,
+  } = useCart();
 
   if (!isLoaded) {
     return (
@@ -53,7 +64,7 @@ export default function CartPage() {
       <OrderStepper currentStep={1} />
 
       {/* Title Bar */}
-      <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between border-b-2 border-ink pb-5">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between border-b-2 border-ink pb-5">
         <div>
           <span className="type-label text-xs uppercase tracking-widest text-ink-soft block">
             Step 1 of 3
@@ -63,10 +74,22 @@ export default function CartPage() {
           </h1>
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-mono">
-          <span className="text-ink-soft">
-            {itemCount} {itemCount === 1 ? "item" : "items"}
-          </span>
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-mono">
+          {/* Select All Toggle */}
+          <label className="flex items-center gap-2 cursor-pointer select-none py-1 text-ink hover:text-ctrl-red transition-colors">
+            <input
+              type="checkbox"
+              checked={isAllSelected}
+              onChange={(e) => toggleSelectAll(e.target.checked)}
+              className="h-4 w-4 rounded-none accent-ink cursor-pointer"
+            />
+            <span className="font-semibold">
+              Select All ({selectedItemCount}/{itemCount} pieces)
+            </span>
+          </label>
+
+          <span className="hidden sm:inline text-border">|</span>
+
           <button
             onClick={clearCart}
             className="font-medium text-ink-soft hover:text-ctrl-red transition-colors underline underline-offset-2 cursor-pointer"
@@ -100,11 +123,12 @@ export default function CartPage() {
         {/* Sidebar */}
         <div className="lg:col-span-4">
           <OrderSummary
-            subtotal={subtotal}
-            tax={tax}
-            total={total}
-            itemCount={itemCount}
+            subtotal={selectedSubtotal}
+            tax={selectedTax}
+            total={selectedTotal}
+            itemCount={selectedItemCount}
             showCheckoutButton
+            disabledCheckout={selectedItemCount === 0}
           />
         </div>
       </div>
