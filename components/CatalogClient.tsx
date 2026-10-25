@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Product, Audience, Department, Subcategory } from "@/types";
 import CatalogFilterDrawer from "./CatalogFilterDrawer";
 import ProductCard from "./ProductCard";
@@ -15,6 +15,43 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
   const [selectedDepartment, setSelectedDepartment] = useState<Department>("all");
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>("all");
   const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc">("featured");
+
+  const syncFiltersFromLocation = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const aud = params.get("audience");
+    const dept = params.get("dept") || params.get("department");
+    const sub = params.get("subcategory");
+    const q = params.get("q") || params.get("search");
+    const sort = params.get("sort");
+
+    if (aud && ["all", "men", "women", "kids"].includes(aud)) {
+      setSelectedAudience(aud as Audience);
+    }
+    if (dept && ["all", "clothes", "shoes", "accessories"].includes(dept)) {
+      setSelectedDepartment(dept as Department);
+    }
+    if (sub) {
+      setSelectedSubcategory(sub as Subcategory);
+    }
+    if (q !== null && q !== undefined) {
+      setSearchQuery(q);
+    }
+    if (sort === "price-asc" || sort === "price-desc" || sort === "featured") {
+      setSortBy(sort);
+    }
+  }, []);
+
+  useEffect(() => {
+    syncFiltersFromLocation();
+    window.addEventListener("popstate", syncFiltersFromLocation);
+    window.addEventListener("clothes:navigate-filter", syncFiltersFromLocation);
+
+    return () => {
+      window.removeEventListener("popstate", syncFiltersFromLocation);
+      window.removeEventListener("clothes:navigate-filter", syncFiltersFromLocation);
+    };
+  }, [syncFiltersFromLocation]);
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = initialProducts.filter((product) => {
@@ -65,10 +102,14 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
     setSelectedDepartment("all");
     setSelectedSubcategory("all");
     setSortBy("featured");
+
+    if (typeof window !== "undefined" && window.location.search) {
+      window.history.pushState({}, "", window.location.pathname);
+    }
   };
 
   return (
-    <section id="catalog" className="bg-backdrop px-[clamp(1rem,4vw,3.5rem)] py-16 border-t border-ink/20">
+    <section id="catalog" className="bg-backdrop px-[clamp(1rem,4vw,3.5rem)] py-16 border-t border-border">
       {/* Centered Editorial Max-Width Container */}
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b-2 border-ink pb-6">
@@ -108,21 +149,21 @@ export default function CatalogClient({ initialProducts }: CatalogClientProps) {
         />
 
         {/* 3-Column Architectural Hairline Lookbook Grid (2-cols on mobile for tight balance) */}
-        <div className="mt-8 border-t border-l border-ink/20 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mt-8 border-t border-l border-border grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3">
           {filteredAndSortedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
         {filteredAndSortedProducts.length === 0 && (
-          <div className="py-20 text-center border border-ink/20 bg-paper/40 mt-8">
+          <div className="py-20 text-center border border-border bg-paper/60 mt-8">
             <p className="type-display text-lg text-ink">No matching silhouettes found</p>
             <p className="text-xs text-ink-soft mt-1 font-mono">
               No items match your filter criteria.
             </p>
             <button
               onClick={handleResetFilters}
-              className="type-label mt-5 px-5 py-2.5 bg-ink text-paper text-xs uppercase tracking-widest hover:bg-ink-soft transition-colors"
+              className="type-label mt-5 px-5 py-2.5 bg-ink text-paper text-xs uppercase tracking-widest hover:bg-ink-soft transition-colors cursor-pointer"
             >
               Reset All Filters
             </button>

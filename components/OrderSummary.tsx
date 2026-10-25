@@ -19,20 +19,20 @@ export default function OrderSummary({
   const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
 
   return (
-    <div className="border border-ink/25 bg-paper/70 p-6 shadow-sm">
+    <div className="border border-border bg-paper p-6 shadow-sm">
       <h2 className="type-label text-base text-ink">Order Summary</h2>
 
       {/* Free Shipping Indicator */}
-      <div className="mt-4 border border-ink/15 bg-backdrop/60 p-3.5">
+      <div className="mt-4 border border-border bg-backdrop p-3.5">
         <div className="flex items-center justify-between text-xs">
           <span className="font-mono text-ink">
             {subtotal >= freeShippingThreshold ? (
-              <span className="text-ink font-semibold">
-                ✓ Worldwide Insured Dispatch Unlocked
+              <span className="text-sage font-semibold flex items-center gap-1">
+                <span>✓</span> Complimentary Standard Shipping Unlocked
               </span>
             ) : (
               <span>
-                Add <span className="font-bold text-ctrl-red font-mono">${(freeShippingThreshold - subtotal).toFixed(2)}</span> for free dispatch
+                Add <span className="font-bold text-ctrl-red font-mono">${(freeShippingThreshold - subtotal).toFixed(2)}</span> for complimentary shipping
               </span>
             )}
           </span>
@@ -40,7 +40,7 @@ export default function OrderSummary({
             {progressPercent}%
           </span>
         </div>
-        <div className="mt-2 h-1 w-full overflow-hidden bg-ink/20">
+        <div className="mt-2 h-1 w-full overflow-hidden bg-border-strong">
           <div
             className="h-full bg-ink transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
@@ -66,7 +66,7 @@ export default function OrderSummary({
           </span>
         </div>
 
-        <div className="border-t border-ink/20 pt-3">
+        <div className="border-t border-border pt-3">
           <div className="flex justify-between text-sm">
             <span className="type-label text-sm text-ink">Total Due</span>
             <span className="font-mono font-bold text-ink text-base">

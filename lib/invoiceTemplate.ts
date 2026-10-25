@@ -1,4 +1,5 @@
 import { Order } from "@/types";
+import { toKhr } from "./cambodiaLocations";
 
 function escapeHtml(str: string): string {
   return str
@@ -11,33 +12,59 @@ function escapeHtml(str: string): string {
 
 export function buildInvoiceHtml(order: Order): string {
   const safeName = escapeHtml(order.customer.name);
-  const safeEmail = escapeHtml(order.customer.email);
+  const safeEmail = escapeHtml(order.customer.email || "customer@clothes-shop.com");
   const safePhone = escapeHtml(order.customer.phone);
-  const safeAddress = escapeHtml(order.customer.address);
+  const safeTelegram = order.customer.telegram ? escapeHtml(order.customer.telegram) : "";
   const safeOrderId = escapeHtml(order.id);
+  const safeTracking = escapeHtml(order.trackingNumber || `KH-${order.id.slice(-7)}`);
+
+  const street = escapeHtml(order.customer.streetAddress || order.customer.address);
+  const sangkat = order.customer.sangkatCommune ? escapeHtml(order.customer.sangkatCommune) : "";
+  const khan = order.customer.khanDistrict ? escapeHtml(order.customer.khanDistrict) : "";
+  const cityProv = escapeHtml(order.customer.cityProvince || "Phnom Penh");
+  const landmark = order.customer.landmark ? escapeHtml(order.customer.landmark) : "";
+
+  const shippingCost = typeof order.shippingCost === "number" ? order.shippingCost : 0;
+  const shippingMethodName = order.customer.shippingMethod === "phnom_penh_express"
+    ? "Phnom Penh Express (Same-Day Rider)"
+    : order.customer.shippingMethod === "phnom_penh_standard"
+    ? "Phnom Penh Standard Delivery"
+    : `Provincial Delivery (${cityProv})`;
+
+  const paymentMethodLabel = order.customer.paymentMethod === "khqr"
+    ? "KHQR (Bakong / ABA Mobile)"
+    : order.customer.paymentMethod === "cod"
+    ? "Cash on Delivery (Pay to Rider)"
+    : `Card Authorization (•••• ${order.customer.cardNumberLast4 || "4242"})`;
 
   const formattedDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
 
+  const totalKhrString = toKhr(order.total);
+
+  // NO ITEM IMAGES: purely typographic, compact, paper-clean table rows
   const itemsHtml = order.items
     .map(
       (item) => `
       <tr>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; font-weight: 600; color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+        <td style="padding: 14px 18px; border-bottom: 1px solid #ebebea; font-family: monospace; font-size: 11px; color: #888880;">
+          CLO-${item.productId.toString().padStart(4, "0")}
+        </td>
+        <td style="padding: 14px 18px; border-bottom: 1px solid #ebebea; font-size: 13px; font-weight: 600; color: #111111;">
           ${escapeHtml(item.title)}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: center; color: #525252; font-family: monospace;">
+        <td style="padding: 14px 18px; border-bottom: 1px solid #ebebea; font-size: 12px; text-align: center; color: #555555; font-family: monospace;">
           ${item.quantity}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: right; color: #525252; font-family: monospace;">
+        <td style="padding: 14px 18px; border-bottom: 1px solid #ebebea; font-size: 12px; text-align: right; color: #555555; font-family: monospace;">
           $${item.price.toFixed(2)}
         </td>
-        <td style="padding: 14px 16px; border-bottom: 1px solid #e5e5e5; font-size: 13px; text-align: right; font-weight: 700; color: #0a0a0a; font-family: monospace;">
+        <td style="padding: 14px 18px; border-bottom: 1px solid #ebebea; font-size: 13px; text-align: right; font-weight: 700; color: #111111; font-family: monospace;">
           $${(item.price * item.quantity).toFixed(2)}
         </td>
       </tr>
@@ -50,7 +77,7 @@ export function buildInvoiceHtml(order: Order): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Receipt ${safeOrderId} — CTRL Studio</title>
+  <title>Tax Invoice ${safeOrderId} — Clothes™ Cambodia</title>
   <style>
     * {
       box-sizing: border-box;
@@ -59,177 +86,212 @@ export function buildInvoiceHtml(order: Order): string {
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: #f4f3ef;
-      color: #0a0a0a;
-      padding: 48px 20px;
+      background-color: #f7f7f5;
+      color: #1a1a1a;
+      padding: 40px 16px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
     .invoice-card {
-      max-width: 800px;
+      max-width: 780px;
       margin: 0 auto;
-      background: #faf9f5;
-      border: 2px solid #0a0a0a;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      background: #ffffff;
+      border: 1px solid #e2e2df;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
     .header-bar {
-      padding: 36px 36px 28px 36px;
-      border-bottom: 2px solid #0a0a0a;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      background: #0a0a0a;
-      color: #faf9f5;
-    }
-    .brand-logo {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      color: #ffffff;
-      line-height: 1;
-    }
-    .brand-tag {
-      font-size: 10px;
-      color: #d4d4d4;
-      margin-top: 6px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-family: monospace;
-    }
-    .order-status {
-      text-align: right;
-    }
-    .status-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: #ff2d20;
-      color: #ffffff;
-      padding: 5px 12px;
-      font-family: monospace;
-    }
-    .order-meta-id {
-      font-size: 12px;
-      font-weight: 700;
-      color: #ffffff;
-      margin-top: 8px;
-      font-family: monospace;
-      letter-spacing: 0.05em;
-    }
-    .order-meta-date {
-      font-size: 11px;
-      color: #a3a3a3;
-      margin-top: 3px;
-      font-family: monospace;
-    }
-    .content-section {
-      padding: 36px;
-    }
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 28px;
-      margin-bottom: 32px;
-      padding-bottom: 28px;
-      border-bottom: 1px dashed #0a0a0a;
-    }
-    .meta-block h4 {
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #737373;
-      margin-bottom: 8px;
-      font-family: monospace;
-    }
-    .meta-block p {
-      font-size: 13px;
-      color: #0a0a0a;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 28px;
-    }
-    th {
-      padding: 12px 16px;
-      text-align: left;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #0a0a0a;
-      border-bottom: 2px solid #0a0a0a;
-      background: #eae9e3;
-      font-family: monospace;
-    }
-    th:nth-child(2) {
-      text-align: center;
-    }
-    th:nth-child(3), th:nth-child(4) {
-      text-align: right;
-    }
-    .summary-wrap {
-      display: flex;
-      justify-content: flex-end;
-    }
-    .summary-table {
-      width: 320px;
-      font-size: 13px;
-    }
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      color: #525252;
-      font-family: monospace;
-    }
-    .summary-row.total {
-      border-top: 2px solid #0a0a0a;
-      margin-top: 8px;
-      padding-top: 12px;
-      font-size: 16px;
-      font-weight: 900;
-      color: #0a0a0a;
-    }
-    .stamp-container {
-      margin-top: 28px;
-      padding: 16px;
-      border: 1px solid #d4d4d4;
-      background: #ffffff;
+      padding: 32px 36px;
+      border-bottom: 2px solid #1a1a1a;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
+      background: #fafaf8;
     }
-    .stamp-text {
-      font-family: monospace;
-      font-size: 11px;
-      color: #525252;
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
-    .stamp-badge {
-      font-family: monospace;
+    .brand-logo-emblem {
+      width: 48px;
+      height: 48px;
+      background: #111111;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 4px;
+      letter-spacing: -0.05em;
+    }
+    .brand-text-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111111;
+      font-family: Georgia, serif;
+    }
+    .brand-text-sub {
       font-size: 11px;
-      font-weight: 800;
+      color: #777772;
       text-transform: uppercase;
-      color: #0a0a0a;
-      border: 1px dashed #0a0a0a;
-      padding: 4px 8px;
-      letter-spacing: 0.08em;
-    }
-    .footer-note {
-      padding: 20px 36px;
-      background: #eae9e3;
-      border-top: 1px solid #d4d4d4;
-      text-align: center;
-      font-size: 11px;
+      letter-spacing: 0.1em;
+      margin-top: 2px;
       font-family: monospace;
-      color: #737373;
+    }
+    .order-badge {
+      padding: 6px 12px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: monospace;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid #ebebea;
+      background: #ffffff;
+    }
+    .meta-cell {
+      padding: 16px 24px;
+      border-right: 1px solid #ebebea;
+    }
+    .meta-cell:last-child {
+      border-right: none;
+    }
+    .meta-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888880;
+      font-family: monospace;
+      margin-bottom: 3px;
+    }
+    .meta-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: #111111;
+      word-break: break-all;
+    }
+    .address-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 24px 36px;
+      border-bottom: 1px solid #ebebea;
+      gap: 36px;
+      background: #ffffff;
+    }
+    .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #888880;
+      font-family: monospace;
+      margin-bottom: 6px;
+    }
+    .recipient-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 3px;
+    }
+    .address-text {
+      font-size: 12px;
+      color: #555550;
+      line-height: 1.45;
+    }
+    .table-container {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table-head th {
+      padding: 12px 18px;
+      background: #fafaf8;
+      border-bottom: 1px solid #e2e2df;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #666660;
+      font-family: monospace;
+      font-weight: 600;
+    }
+    .totals-area {
+      padding: 24px 36px;
+      border-top: 1px solid #e2e2df;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      background: #ffffff;
+    }
+    .totals-box {
+      width: 280px;
+    }
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-family: monospace;
+      color: #555550;
+      margin-bottom: 6px;
+    }
+    .totals-row.final {
+      border-top: 2px solid #111111;
+      padding-top: 10px;
+      margin-top: 10px;
+      align-items: baseline;
+    }
+    .total-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #111111;
+    }
+    .total-khr {
+      font-size: 11px;
+      color: #777770;
+      display: block;
+      margin-top: 2px;
+    }
+    .total-usd {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .footer-bar {
+      padding: 20px 36px;
+      background: #fafaf8;
+      border-top: 1px solid #ebebea;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #777772;
+      font-family: monospace;
+    }
+    .print-bar {
+      max-width: 780px;
+      margin: 16px auto 0 auto;
+      text-align: right;
+    }
+    .print-btn {
+      display: inline-block;
+      padding: 9px 18px;
+      background: #111111;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: monospace;
     }
     @media print {
       body {
@@ -240,92 +302,133 @@ export function buildInvoiceHtml(order: Order): string {
         border: none;
         box-shadow: none;
       }
+      .print-bar {
+        display: none !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .header-bar { flex-direction: column; align-items: flex-start; padding: 20px; }
+      .meta-grid { grid-template-columns: 1fr 1fr; }
+      .address-section { grid-template-columns: 1fr; padding: 20px; gap: 16px; }
+      .totals-area { flex-direction: column; align-items: stretch; padding: 20px; gap: 16px; }
+      .totals-box { width: 100%; }
+      .footer-bar { flex-direction: column; gap: 8px; text-align: center; }
     }
   </style>
 </head>
 <body>
   <div class="invoice-card">
+    <!-- Header with Brand Logo -->
     <div class="header-bar">
+      <div class="brand-section">
+        <div class="brand-logo-emblem">C</div>
+        <div>
+          <div class="brand-text-title">Clothes™ Apparel Co.</div>
+          <div class="brand-text-sub">Phnom Penh, Cambodia &bull; Official Tax Invoice</div>
+        </div>
+      </div>
       <div>
-        <div class="brand-logo">CTRL — THE NEW ERA</div>
-        <div class="brand-tag">Studio Dispatch Slip · Official Archive Release</div>
-      </div>
-      <div class="order-status">
-        <span class="status-badge">Cash on Delivery</span>
-        <div class="order-meta-id">${safeOrderId}</div>
-        <div class="order-meta-date">${formattedDate}</div>
+        <span class="order-badge">Confirmed Order</span>
       </div>
     </div>
 
-    <div class="content-section">
-      <div class="meta-grid">
-        <div class="meta-block">
-          <h4>Billed To</h4>
-          <p><strong>${safeName}</strong></p>
-          <p>${safeEmail}</p>
-          <p>${safePhone}</p>
-        </div>
+    <!-- Metadata Grid -->
+    <div class="meta-grid">
+      <div class="meta-cell">
+        <div class="meta-label">Invoice Reference</div>
+        <div class="meta-value">${safeOrderId}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Date Issued</div>
+        <div class="meta-value">${formattedDate}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Courier Tracking</div>
+        <div class="meta-value" style="font-family: monospace;">${safeTracking}</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-label">Payment Mode</div>
+        <div class="meta-value">${escapeHtml(paymentMethodLabel.split("(")[0].trim())}</div>
+      </div>
+    </div>
 
-        <div class="meta-block">
-          <h4>Dispatch Destination</h4>
-          <p style="white-space: pre-line;">${safeAddress}</p>
-        </div>
+    <!-- Address Section -->
+    <div class="address-section">
+      <div>
+        <div class="section-title">Delivery Destination</div>
+        <div class="recipient-name">${safeName}</div>
+        <div class="address-text">${street}</div>
+        ${sangkat ? `<div class="address-text">Sangkat ${sangkat}${khan ? `, Khan ${khan}` : ""}</div>` : ""}
+        <div class="address-text">${cityProv}, Cambodia</div>
+        ${landmark ? `<div class="address-text" style="font-style: italic; color: #777; margin-top: 3px;">Landmark: "${landmark}"</div>` : ""}
+      </div>
+      <div>
+        <div class="section-title">Courier &amp; Recipient Coordination</div>
+        <div style="font-size: 12px; color: #111; font-weight: 600;">Phone: ${safePhone}</div>
+        ${safeTelegram ? `<div style="font-size: 12px; color: #555; margin-top: 3px;">Telegram: <strong>${safeTelegram}</strong></div>` : ""}
+        <div style="font-size: 12px; color: #555; margin-top: 3px;">Service: ${escapeHtml(shippingMethodName)}</div>
+        <div style="font-size: 11px; color: #777; margin-top: 3px;">Notification: ${safeEmail}</div>
+      </div>
+    </div>
 
-        <div class="meta-block">
-          <h4>Courier Terms</h4>
-          <p>White-Glove Doorstep Delivery</p>
-          <p>Inspect garments before payment handoff</p>
+    <!-- Itemized Table (NO ITEM IMAGES) -->
+    <table class="table-container">
+      <thead class="table-head">
+        <tr>
+          <th style="text-align: left; width: 100px;">SKU</th>
+          <th style="text-align: left;">Item Description</th>
+          <th style="text-align: center; width: 70px;">Qty</th>
+          <th style="text-align: right; width: 100px;">Unit Price</th>
+          <th style="text-align: right; width: 110px;">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemsHtml}
+      </tbody>
+    </table>
+
+    <!-- Totals Area -->
+    <div class="totals-area">
+      <div>
+        <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; font-family: monospace;">
+          Customer Service Support
+        </div>
+        <div style="font-size: 11px; color: #555; margin-top: 3px;">
+          Telephone: 012 345 678 &bull; Telegram: @clothescambodia
+        </div>
+        <div style="font-size: 11px; color: #777; margin-top: 2px;">
+          Show this digital slip to the courier upon doorstep receipt.
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Silhouette / Item</th>
-            <th>Qty</th>
-            <th>Unit Price</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${itemsHtml}
-        </tbody>
-      </table>
-
-      <div class="summary-wrap">
-        <div class="summary-table">
-          <div class="summary-row">
-            <span>Subtotal</span>
-            <span>$${order.subtotal.toFixed(2)}</span>
-          </div>
-          <div class="summary-row">
-            <span>Sales Tax (8%)</span>
-            <span>$${order.tax.toFixed(2)}</span>
-          </div>
-          <div class="summary-row">
-            <span>Insured Courier Dispatch</span>
-            <span style="color: #0a0a0a; font-weight: 700;">FREE</span>
-          </div>
-          <div class="summary-row total">
-            <span>Total Payable</span>
-            <span>$${order.total.toFixed(2)} USD</span>
-          </div>
+      <div class="totals-box">
+        <div class="totals-row">
+          <span>Subtotal</span>
+          <span>$${order.subtotal.toFixed(2)} USD</span>
         </div>
-      </div>
-
-      <div class="stamp-container">
-        <div class="stamp-text">
-          AUTHENTICATED RECORD // CTRL ATELIER AUTUMN/WINTER EDITION
+        <div class="totals-row">
+          <span>Delivery Fee</span>
+          <span>${shippingCost === 0 ? "FREE" : `$${shippingCost.toFixed(2)} USD`}</span>
         </div>
-        <div class="stamp-badge">
-          CERTIFIED DISPATCH
+        <div class="totals-row final">
+          <div>
+            <span class="total-title">Total Due</span>
+            <span class="total-khr">≈ ${totalKhrString}</span>
+          </div>
+          <span class="total-usd">$${order.total.toFixed(2)}</span>
         </div>
       </div>
     </div>
 
-    <div class="footer-note">
-      This is an offline acquisition receipt generated by CTRL Studio. Present this slip upon courier delivery.
+    <!-- Footer -->
+    <div class="footer-bar">
+      <div>Clothes™ Apparel Co. &bull; Phnom Penh, Cambodia</div>
+      <div>Official Customer Receipt</div>
     </div>
+  </div>
+
+  <div class="print-bar">
+    <button onclick="window.print()" class="print-btn">Print Receipt</button>
   </div>
 </body>
 </html>`;

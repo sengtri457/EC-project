@@ -33,7 +33,7 @@ export default async function ProductPage({
         </Link>
         <span>/</span>
         <Link
-          href="/#catalog"
+          href="/catalog"
           className="uppercase hover:text-ink transition-colors"
         >
           Catalog
@@ -71,7 +71,7 @@ export default async function ProductPage({
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
         {/* Product Media Column */}
         <div className="lg:col-span-7 flex justify-center">
-          <div className="relative aspect-square w-full max-h-[520px] overflow-hidden border border-ink/20 bg-paper/60 p-6 sm:p-12 shadow-sm flex items-center justify-center">
+          <div className="relative aspect-square w-full max-h-[520px] overflow-hidden border border-border bg-paper p-6 sm:p-12 shadow-sm flex items-center justify-center">
             <Image
               src={product.thumbnail}
               alt={product.title}
@@ -83,7 +83,7 @@ export default async function ProductPage({
 
             {/* Category Pill */}
             <div className="absolute top-4 left-4">
-              <span className="border border-ink/30 bg-paper px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-ink shadow-sm">
+              <span className="border border-border-strong bg-paper px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-ink shadow-sm">
                 {product.category}
               </span>
             </div>
@@ -118,7 +118,7 @@ export default async function ProductPage({
             </div>
 
             {/* Description */}
-            <div className="mt-6 border-t border-ink/20 pt-6">
+            <div className="mt-6 border-t border-border pt-6">
               <h2 className="type-label text-xs uppercase tracking-wider text-ink-soft">
                 Design &amp; Material Specifications
               </h2>
@@ -133,18 +133,18 @@ export default async function ProductPage({
             </div>
 
             {/* Purchase Options */}
-            <div className="mt-8 border-t border-ink/20 pt-6">
+            <div className="mt-8 border-t border-border pt-6">
               <AddToCartButton product={product} />
             </div>
           </div>
 
           {/* Guarantee Badges */}
-          <div className="mt-10 border-t border-ink/20 pt-6 grid grid-cols-2 gap-4 text-xs font-mono text-ink-soft">
-            <div className="border border-ink/15 bg-paper/40 p-3">
+          <div className="mt-10 border-t border-border pt-6 grid grid-cols-2 gap-4 text-xs font-mono text-ink-soft">
+            <div className="border border-border bg-paper p-3 shadow-xs">
               <p className="font-bold text-ink">Insured Dispatch</p>
               <p className="mt-0.5 text-[11px]">Carbon-neutral shipping</p>
             </div>
-            <div className="border border-ink/15 bg-paper/40 p-3">
+            <div className="border border-border bg-paper p-3 shadow-xs">
               <p className="font-bold text-ink">Returns</p>
               <p className="mt-0.5 text-[11px]">30-day effortless returns</p>
             </div>
