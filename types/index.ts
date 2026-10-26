@@ -24,8 +24,7 @@ export type Product = {
   stock: number;
   thumbnail: string;
   category: string;
-  
-  // 3-Tier Hierarchical Taxonomy
+
   audience?: Audience;
   department?: Department;
   subcategory?: Subcategory;
@@ -55,18 +54,16 @@ export type PaymentMethod = "khqr" | "cod" | "card";
 export type Customer = {
   name: string;
   email: string;
-  phone: string; // Cambodian phone (0xx xxx xxx or +855...)
+  phone: string;
   telegram?: string;
-  address: string; // Full composite address string
-  
-  // Structured Cambodian Address
-  cityProvince: string; // e.g. "Phnom Penh", "Siem Reap", "Battambang"
-  khanDistrict?: string; // e.g. "Chamkarmon", "Tuol Kouk"
-  sangkatCommune?: string; // e.g. "BKK1", "Phsar Thmey"
-  streetAddress: string; // e.g. "House #24, Street 310"
-  landmark?: string; // e.g. "Near Russian Market / BKK High School"
+  address: string;
 
-  // Legacy fallback optional fields
+  cityProvince: string;
+  khanDistrict?: string;
+  sangkatCommune?: string;
+  streetAddress: string;
+  landmark?: string;
+
   street?: string;
   apartment?: string;
   city?: string;
@@ -84,14 +81,14 @@ export type Customer = {
 
 export type Order = {
   id: string;
-  createdAt: string; // ISO date string
+  createdAt: string;
   customer: Customer;
   items: CartItem[];
   subtotal: number;
   shippingCost: number;
   tax: number;
   total: number;
-  totalKhr?: number; // Cambodian Riel at 1 USD = 4,100 KHR
+  totalKhr?: number;
   trackingNumber?: string;
   status?: "confirmed" | "processing" | "out_for_delivery" | "delivered";
 };
