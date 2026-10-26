@@ -12,57 +12,107 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      {/* 1. Signature Interactive Clothes Rail Hero */}
       <ClothingRack products={pieces} />
 
-      {/* 2. Cambodia Express Perks & Trust Guarantees Strip */}
       <section className="border-t border-b border-border bg-paper py-5 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-4 gap-6 text-xs font-mono">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas border border-border text-ink">
-              <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25V3.75c0-.621-.504-1.125-1.125-1.125h-9c-.621 0-1.125.504-1.125 1.125v10.5c0 .621.504 1.125 1.125 1.125h2.25" />
+              <svg
+                className="h-4.5 w-4.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25V3.75c0-.621-.504-1.125-1.125-1.125h-9c-.621 0-1.125.504-1.125 1.125v10.5c0 .621.504 1.125 1.125 1.125h2.25"
+                />
               </svg>
             </div>
             <div>
               <p className="font-semibold text-ink">Phnom Penh Express</p>
-              <p className="text-ink-soft text-[11px]">1–3 hrs in PP · 24-48h nationwide</p>
+              <p className="text-ink-soft text-[11px]">
+                1–3 hrs in PP · 24-48h nationwide
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas border border-border text-ink">
-              <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+              <svg
+                className="h-4.5 w-4.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"
+                />
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-ink">KHQR &amp; Cash on Delivery</p>
-              <p className="text-ink-soft text-[11px]">ABA, Bakong &amp; doorstep cash</p>
+              <p className="font-semibold text-ink">
+                KHQR &amp; Cash on Delivery
+              </p>
+              <p className="text-ink-soft text-[11px]">
+                ABA, Bakong &amp; doorstep cash
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas border border-border text-ink">
-              <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+              <svg
+                className="h-4.5 w-4.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
               </svg>
             </div>
             <div>
               <p className="font-semibold text-ink">Doorstep Size Exchange</p>
-              <p className="text-ink-soft text-[11px]">Easy rider exchange if fit isn&apos;t 100%</p>
+              <p className="text-ink-soft text-[11px]">
+                Easy rider exchange if fit isn&apos;t 100%
+              </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-canvas border border-border text-ink">
-              <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+              <svg
+                className="h-4.5 w-4.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                />
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-ink">Lightweight &amp; Breathable</p>
-              <p className="text-ink-soft text-[11px]">100% organic cotton &amp; natural linen</p>
+              <p className="font-semibold text-ink">
+                Lightweight &amp; Breathable
+              </p>
+              <p className="text-ink-soft text-[11px]">
+                100% organic cotton &amp; natural linen
+              </p>
             </div>
           </div>
         </div>
@@ -105,7 +155,8 @@ export default function Home() {
                   Menswear
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Boxy oversized tees, breathable shirts, relaxed trousers, and denim.
+                  Boxy oversized tees, breathable shirts, relaxed trousers, and
+                  denim.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
@@ -129,7 +180,8 @@ export default function Home() {
                   Womenswear
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Washed linen shirts, effortless everyday tops, and relaxed trousers.
+                  Washed linen shirts, effortless everyday tops, and relaxed
+                  trousers.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
@@ -153,7 +205,8 @@ export default function Home() {
                   Shoes &amp; Trainers
                 </h3>
                 <p className="text-xs text-ink-soft mt-1.5 leading-relaxed font-mono">
-                  Lightweight everyday sneakers and versatile low-profile trainers.
+                  Lightweight everyday sneakers and versatile low-profile
+                  trainers.
                 </p>
               </div>
               <div className="pt-4 flex items-center justify-between text-xs font-mono border-t border-border/60">
@@ -280,7 +333,8 @@ export default function Home() {
               </h2>
             </div>
             <p className="text-xs font-mono text-ink-soft max-w-md">
-              Fabrics selected specifically to stay cool outdoors and comfortable in air-conditioned spaces.
+              Fabrics selected specifically to stay cool outdoors and
+              comfortable in air-conditioned spaces.
             </p>
           </div>
 
@@ -300,7 +354,8 @@ export default function Home() {
                   Heavyweight Organic Cotton
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Crisp boxy structure that holds its shape all day, pre-shrunk so it stays true to size after washing.
+                  Crisp boxy structure that holds its shape all day, pre-shrunk
+                  so it stays true to size after washing.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
@@ -323,12 +378,15 @@ export default function Home() {
                   Stone-Washed Linen
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Pure flax weave with an open texture that allows natural airflow on warm, sunny afternoons.
+                  Pure flax weave with an open texture that allows natural
+                  airflow on warm, sunny afternoons.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
                 <span>Natural Flax</span>
-                <span className="text-forest font-semibold">Maximum Airflow</span>
+                <span className="text-forest font-semibold">
+                  Maximum Airflow
+                </span>
               </div>
             </div>
 
@@ -346,12 +404,15 @@ export default function Home() {
                   Soft-Washed Selvedge Denim
                 </h3>
                 <p className="text-xs font-mono text-ink-soft mt-1.5 leading-relaxed">
-                  Durable shuttle-loom denim pre-softened for immediate comfort while keeping a sharp, clean drape.
+                  Durable shuttle-loom denim pre-softened for immediate comfort
+                  while keeping a sharp, clean drape.
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-border/80 text-[11px] font-mono text-ink flex justify-between">
                 <span>Vintage Indigo</span>
-                <span className="text-forest font-semibold">Reinforced Seams</span>
+                <span className="text-forest font-semibold">
+                  Reinforced Seams
+                </span>
               </div>
             </div>
           </div>
@@ -371,7 +432,8 @@ export default function Home() {
               </h2>
             </div>
             <p className="text-xs font-mono text-ink-soft">
-              Real reviews from customers in Phnom Penh, Siem Reap, and across Cambodia.
+              Real reviews from customers in Phnom Penh, Siem Reap, and across
+              Cambodia.
             </p>
           </div>
 
@@ -381,7 +443,9 @@ export default function Home() {
                 Phnom Penh &bull; BKK1
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;The jacket has the exact structured drape I wanted without feeling stiff in the heat. Arrived in 2 hours via express rider.&rdquo;
+                &ldquo;The jacket has the exact structured drape I wanted
+                without feeling stiff in the heat. Arrived in 2 hours via
+                express rider.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Sophea C.</span>
@@ -394,7 +458,9 @@ export default function Home() {
                 Siem Reap &bull; Wat Bo
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;Ordered via KHQR scan. The packaging was immaculate and the waffle fabric is so comfortable. Telegram support was fast.&rdquo;
+                &ldquo;Ordered via KHQR scan. The packaging was immaculate and
+                the waffle fabric is so comfortable. Telegram support was
+                fast.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Vireak R.</span>
@@ -407,7 +473,8 @@ export default function Home() {
                 Phnom Penh &bull; Tuol Kouk
               </span>
               <p className="text-xs font-mono text-ink leading-relaxed italic">
-                &ldquo;Clean minimalist design with substantial fabric weight. The doorstep size exchange gave me complete confidence.&rdquo;
+                &ldquo;Clean minimalist design with substantial fabric weight.
+                The doorstep size exchange gave me complete confidence.&rdquo;
               </p>
               <div className="pt-3 border-t border-border flex justify-between items-center text-[11px] font-mono">
                 <span className="font-semibold text-ink">Dara K.</span>
@@ -420,7 +487,9 @@ export default function Home() {
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-between border border-border bg-canvas p-4 text-xs font-mono gap-3">
             <div className="flex items-center gap-2.5 text-ink">
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Questions about sizing or fabrics? Our team is live on Telegram.</span>
+              <span>
+                Questions about sizing or fabrics? Our team is live on Telegram.
+              </span>
             </div>
             <a
               href="https://t.me/"
@@ -445,7 +514,8 @@ export default function Home() {
             Get 10% Off Your First Order
           </h2>
           <p className="text-xs font-mono text-ink-soft mt-1.5 max-w-sm mx-auto leading-relaxed">
-            Join our member list for drop previews, private sales in Phnom Penh, and 10% off your first checkout.
+            Join our member list for drop previews, private sales in Phnom Penh,
+            and 10% off your first checkout.
           </p>
 
           <NewsletterForm />
