@@ -9,7 +9,6 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   return (
     <article className="group relative flex flex-col justify-between border-r border-b border-border bg-paper transition-colors hover:bg-backdrop">
-      {/* Controlled, Compact Lookbook Image Container */}
       <Link
         href={`/products/${product.id}`}
         className="relative flex h-52 sm:h-64 md:h-72 w-full items-center justify-center overflow-hidden p-4 sm:p-6 bg-backdrop/60"
