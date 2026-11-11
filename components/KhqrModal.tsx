@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { checkPaymentStatus, verifyPayment } from "@/lib/api";
+import { buildBakongKhqr } from "@/lib/khqr";
 
 interface KhqrModalProps {
   isOpen: boolean;
@@ -29,7 +30,36 @@ export default function KhqrModal({
   const [isVerifying, setIsVerifying] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  
+  // Custom account override for testing with real personal ABA / Bakong accounts
+  const [customAccount, setCustomAccount] = useState("");
+  const [isCustomizing, setIsCustomizing] = useState(false);
+
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Compute active QR payload (either from backend, or dynamically for user's personal Bakong account)
+  const activePayload = React.useMemo(() => {
+    if (customAccount.trim()) {
+      return buildBakongKhqr({
+        accountId: customAccount.trim(),
+        merchantName: "Clothes Store",
+        merchantCity: "Phnom Penh",
+        amount: amountUsd,
+        currency: "USD",
+        billNumber: orderNumber,
+      }).qr;
+    }
+    if (khqrPayload) return khqrPayload;
+    return buildBakongKhqr({
+      accountId: "clothes@abaa",
+      merchantName: "Clothes Store",
+      merchantCity: "Phnom Penh",
+      amount: amountUsd,
+      currency: "USD",
+      billNumber: orderNumber,
+    }).qr;
+  }, [customAccount, khqrPayload, amountUsd, orderNumber]);
 
   // Countdown timer
   useEffect(() => {
@@ -63,7 +93,7 @@ export default function KhqrModal({
             onSuccess(orderNumber);
           }, 1200);
         }
-      } catch (err) {
+      } catch {
         // Silent failure during polling to avoid interrupting customer experience
       }
     };
@@ -99,6 +129,12 @@ export default function KhqrModal({
     }
   };
 
+  const handleCopyPayload = () => {
+    navigator.clipboard.writeText(activePayload);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -109,7 +145,7 @@ export default function KhqrModal({
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10 w-full max-w-sm overflow-hidden border border-border bg-paper p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center">
+      <div className="relative z-10 w-full max-w-sm overflow-hidden border border-border bg-paper p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-center max-h-[92vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2">
@@ -141,7 +177,7 @@ export default function KhqrModal({
             </p>
           </div>
         ) : (
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 space-y-3.5">
             {/* Amount details */}
             <div>
               <span className="text-2xl font-mono font-extrabold text-ink">
@@ -158,8 +194,8 @@ export default function KhqrModal({
             {/* QR Code Container */}
             <div className="mx-auto inline-flex flex-col items-center justify-center p-3 bg-white border-2 border-ink shadow-sm">
               <QRCodeSVG
-                value={khqrPayload || "000201010212"}
-                size={200}
+                value={activePayload}
+                size={190}
                 level="M"
                 includeMargin={false}
               />
@@ -168,14 +204,58 @@ export default function KhqrModal({
               </div>
             </div>
 
+            {/* Account Info Pill */}
+            <div className="bg-canvas border border-border px-3 py-1.5 text-[11px] font-mono text-ink-soft flex items-center justify-between">
+              <span className="truncate">
+                Account: <strong className="text-ink">{customAccount || "clothes@abaa"}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsCustomizing((prev) => !prev)}
+                className="text-ctrl-red hover:underline text-[10px] uppercase font-semibold shrink-0 ml-2 cursor-pointer"
+              >
+                {isCustomizing ? "Close" : "Change Account"}
+              </button>
+            </div>
+
+            {/* Optional Custom Account Input for Real App Scanning */}
+            {isCustomizing && (
+              <div className="bg-canvas border border-border p-3 text-left space-y-2 text-xs font-mono">
+                <label className="text-[10px] font-semibold uppercase text-ink block">
+                  Scan with your real Bank App:
+                </label>
+                <p className="text-[10px] text-ink-soft leading-tight">
+                  Standard bank apps (ABA, Wing, Bakong) require an account registered with NBC. Enter your personal Bakong/ABA ID to scan and verify:
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customAccount}
+                    onChange={(e) => setCustomAccount(e.target.value)}
+                    placeholder="e.g. yourname@abaa"
+                    className="flex-1 border border-border bg-paper px-2.5 py-1.5 text-xs text-ink focus:border-ink outline-none"
+                  />
+                  {customAccount && (
+                    <button
+                      type="button"
+                      onClick={() => setCustomAccount("")}
+                      className="text-[10px] text-ink-soft hover:text-ink px-1"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Timer and instructions */}
-            <div className="space-y-1.5 font-mono text-xs">
+            <div className="space-y-1 font-mono text-xs">
               <div className="flex items-center justify-center gap-2 text-ink">
                 <span className="h-2 w-2 rounded-full bg-ctrl-red animate-ping" />
                 <span className="font-bold">Awaiting Scan: {timeFormatted}</span>
               </div>
               <p className="text-[11px] text-ink-soft leading-tight">
-                Open <strong>ABA Mobile</strong>, <strong>Wing</strong>, <strong>ACLEDA</strong>, or any Bakong app to scan and confirm.
+                Scan with <strong>ABA Mobile</strong>, <strong>Wing</strong>, <strong>ACLEDA</strong>, or any Bakong app.
               </p>
             </div>
 
@@ -194,13 +274,23 @@ export default function KhqrModal({
               >
                 {isVerifying ? "Verifying..." : "⚡ Simulate Scan & Pay (Test Mode)"}
               </button>
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full border border-border bg-canvas py-2 text-xs font-mono text-ink-soft hover:text-ink transition-colors cursor-pointer"
-              >
-                Change Payment Method
-              </button>
+
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyPayload}
+                  className="flex-1 border border-border bg-canvas py-1.5 text-[11px] font-mono text-ink-soft hover:text-ink transition-colors cursor-pointer"
+                >
+                  {copied ? "✓ Copied Payload" : "Copy Payload String"}
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex-1 border border-border bg-canvas py-1.5 text-[11px] font-mono text-ink-soft hover:text-ink transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
