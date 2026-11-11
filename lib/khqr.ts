@@ -113,3 +113,23 @@ export function buildBakongKhqr(options: KhqrOptions): { qr: string; md5?: strin
 
   return { qr: preCrc + checksum };
 }
+
+/**
+ * Safely extracts the Bakong Account ID from an official KHQR EMVCo string payload.
+ */
+export function extractAccountIdFromKhqr(payload: string): string | null {
+  if (!payload) return null;
+  const tag29Idx = payload.indexOf("29");
+  if (tag29Idx === -1) return null;
+  try {
+    const len = parseInt(payload.slice(tag29Idx + 2, tag29Idx + 4), 10);
+    const tag29Content = payload.slice(tag29Idx + 4, tag29Idx + 4 + len);
+    if (tag29Content.startsWith("00")) {
+      const subLen = parseInt(tag29Content.slice(2, 4), 10);
+      return tag29Content.slice(4, 4 + subLen);
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}

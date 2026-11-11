@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { checkPaymentStatus, verifyPayment } from "@/lib/api";
-import { buildBakongKhqr } from "@/lib/khqr";
+import { buildBakongKhqr, extractAccountIdFromKhqr } from "@/lib/khqr";
 
 interface KhqrModalProps {
   isOpen: boolean;
@@ -35,6 +35,12 @@ export default function KhqrModal({
   // Custom account override for testing with real personal ABA / Bakong accounts
   const [customAccount, setCustomAccount] = useState("");
   const [isCustomizing, setIsCustomizing] = useState(false);
+
+  const detectedBackendAccount = React.useMemo(() => {
+    return extractAccountIdFromKhqr(khqrPayload);
+  }, [khqrPayload]);
+
+  const displayAccount = customAccount || detectedBackendAccount || "Official Merchant";
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -207,14 +213,14 @@ export default function KhqrModal({
             {/* Account Info Pill */}
             <div className="bg-canvas border border-border px-3 py-1.5 text-[11px] font-mono text-ink-soft flex items-center justify-between">
               <span className="truncate">
-                Account: <strong className="text-ink">{customAccount || "clothes@abaa"}</strong>
+                Merchant: <strong className="text-ink">{displayAccount}</strong>
               </span>
               <button
                 type="button"
                 onClick={() => setIsCustomizing((prev) => !prev)}
                 className="text-ctrl-red hover:underline text-[10px] uppercase font-semibold shrink-0 ml-2 cursor-pointer"
               >
-                {isCustomizing ? "Close" : "Change Account"}
+                {isCustomizing ? "Close" : "Override"}
               </button>
             </div>
 
