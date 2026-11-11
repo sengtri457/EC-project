@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getProducts } from "@/data/products";
+import { fetchCatalogProducts } from "@/lib/api";
 import CatalogClient from "@/components/CatalogClient";
 
 export const dynamic = "force-dynamic";
@@ -9,8 +10,9 @@ export const metadata = {
   description: "Browse our complete collection of essentials, knitwear, footwear, and accessories with nationwide Cambodia delivery.",
 };
 
-export default function CatalogPage() {
-  const allProducts = getProducts();
+export default async function CatalogPage() {
+  // Fetch live catalog items from Django backend (with local mock fallback)
+  const allProducts = (await fetchCatalogProducts()) || getProducts();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

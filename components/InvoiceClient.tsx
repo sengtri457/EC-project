@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Order } from "@/types";
 import { getOrderById } from "@/lib/orders";
+import { fetchOrderDetail } from "@/lib/api";
 import { downloadInvoice } from "@/lib/downloadInvoice";
 import { toKhr } from "@/lib/cambodiaLocations";
 import OrderStepper from "@/components/OrderStepper";
@@ -23,20 +24,41 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
       return;
     }
 
-    const found = getOrderById(orderId);
-    if (found) {
-      setOrder(found);
-      setIsLoading(false);
-      return;
+    let isMounted = true;
+
+    async function loadOrder() {
+      // 1. Try local storage first for instantaneous preview
+      const localFound = getOrderById(orderId);
+      if (localFound && isMounted) {
+        setOrder(localFound);
+        setIsLoading(false);
+      }
+
+      // 2. Fetch live official order record from Django backend
+      try {
+        const remoteOrder = await fetchOrderDetail(orderId);
+        if (remoteOrder && isMounted) {
+          setOrder(remoteOrder);
+          setIsLoading(false);
+          return;
+        }
+      } catch {
+        // Fall back to local record
+      }
+
+      // 3. Fallback check for local storage
+      if (!localFound && isMounted) {
+        const retryFound = getOrderById(orderId);
+        setOrder(retryFound || null);
+        setIsLoading(false);
+      }
     }
 
-    const timer = setTimeout(() => {
-      const retryFound = getOrderById(orderId);
-      setOrder(retryFound || null);
-      setIsLoading(false);
-    }, 120);
+    loadOrder();
 
-    return () => clearTimeout(timer);
+    return () => {
+      isMounted = false;
+    };
   }, [orderId]);
 
   if (isLoading) {

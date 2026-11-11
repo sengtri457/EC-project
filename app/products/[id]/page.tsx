@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductById } from "@/data/products";
+import { fetchProductDetail } from "@/lib/api";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,8 @@ export default async function ProductPage({
     notFound();
   }
 
-  const product = getProductById(productId);
+  // Fetch live product & variant stock from Django backend (with local fallback)
+  const product = (await fetchProductDetail(id)) || getProductById(productId);
 
   if (!product) {
     notFound();

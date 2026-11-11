@@ -11,6 +11,8 @@ import { validateCustomer, ValidationErrors, CheckoutFormState } from "@/lib/val
 import { saveOrder } from "@/lib/orders";
 import { CAMBODIA_PROVINCES, PHNOM_PENH_KHANS, toKhr, KHR_RATE } from "@/lib/cambodiaLocations";
 import OrderStepper from "@/components/OrderStepper";
+import { submitOrderCheckout } from "@/lib/api";
+import KhqrModal from "@/components/KhqrModal";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -40,6 +42,23 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isSubmittingServer, setIsSubmittingServer] = useState(false);
+  const [khqrData, setKhqrData] = useState<{
+    isOpen: boolean;
+    paymentId: string;
+    orderNumber: string;
+    payload: string;
+    amountUsd: number;
+    amountKhr: number;
+  }>({
+    isOpen: false,
+    paymentId: "",
+    orderNumber: "",
+    payload: "",
+    amountUsd: 0,
+    amountKhr: 0,
+  });
 
   // Auto-fill from logged-in user
   useEffect(() => {
@@ -128,8 +147,9 @@ export default function CheckoutPage() {
     setErrors({});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setServerError(null);
 
     const allTouched: Record<string, boolean> = {
       name: true,
@@ -205,12 +225,67 @@ export default function CheckoutPage() {
       status: "confirmed",
     };
 
-    setIsSubmitted(true);
-    saveOrder(newOrder);
-    removeSelectedItems();
+    setIsSubmittingServer(true);
+    try {
+      const backendRes = await submitOrderCheckout({ customer: newCustomer, items });
+      const orderNumber = backendRes.order.order_number;
 
+      const syncedOrder: Order = {
+        ...newOrder,
+        id: orderNumber,
+        total: typeof backendRes.order.total_usd === "string" ? parseFloat(backendRes.order.total_usd) : Number(backendRes.order.total_usd),
+        totalKhr: backendRes.order.total_khr,
+        tax: typeof backendRes.order.tax === "string" ? parseFloat(backendRes.order.tax) : Number(backendRes.order.tax),
+        trackingNumber: backendRes.order.tracking_number || trackingNumber,
+      };
+      saveOrder(syncedOrder);
+
+      // If KHQR, present the interactive Bakong modal
+      if (formData.paymentMethod === "khqr" && backendRes.payment) {
+        setKhqrData({
+          isOpen: true,
+          paymentId: backendRes.payment.id,
+          orderNumber: orderNumber,
+          payload: backendRes.payment.khqr_payload,
+          amountUsd: parseFloat(String(backendRes.payment.amount_usd)),
+          amountKhr: backendRes.payment.amount_khr,
+        });
+        setIsSubmittingServer(false);
+        return;
+      }
+
+      // COD or Card: complete immediately
+      setIsSubmitted(true);
+      removeSelectedItems();
+      setIsSubmittingServer(false);
+      startTransition(() => {
+        router.push(`/invoice/${orderNumber}`);
+      });
+    } catch (err: any) {
+      console.warn("Backend checkout error, falling back to local order:", err);
+      if (err.message && !err.message.includes("Failed to fetch")) {
+        setServerError(err.message);
+        setIsSubmittingServer(false);
+        return;
+      }
+
+      // Offline fallback: save order locally and proceed
+      setIsSubmitted(true);
+      saveOrder(newOrder);
+      removeSelectedItems();
+      setIsSubmittingServer(false);
+      startTransition(() => {
+        router.push(`/invoice/${orderId}`);
+      });
+    }
+  };
+
+  const handleKhqrSuccess = (orderNumber: string) => {
+    setIsSubmitted(true);
+    removeSelectedItems();
+    setKhqrData((prev) => ({ ...prev, isOpen: false }));
     startTransition(() => {
-      router.push(`/invoice/${orderId}`);
+      router.push(`/invoice/${orderNumber}`);
     });
   };
 
@@ -283,6 +358,11 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
         {/* Left Form: Real Cambodia Flow */}
         <div className="lg:col-span-7">
+          {serverError && (
+            <div className="mb-6 border-2 border-ctrl-red bg-ctrl-red/10 p-4 text-xs font-mono text-ctrl-red font-semibold">
+              [Backend Checkout Alert]: {serverError}
+            </div>
+          )}
           <form onSubmit={handleSubmit} noValidate className="space-y-8">
             {/* 1. Contact & Courier Communication */}
             <div className="space-y-4">
@@ -862,6 +942,18 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Bakong KHQR Interactive Modal */}
+      <KhqrModal
+        isOpen={khqrData.isOpen}
+        onClose={() => setKhqrData((prev) => ({ ...prev, isOpen: false }))}
+        onSuccess={handleKhqrSuccess}
+        paymentId={khqrData.paymentId}
+        orderNumber={khqrData.orderNumber}
+        khqrPayload={khqrData.payload}
+        amountUsd={khqrData.amountUsd}
+        amountKhr={khqrData.amountKhr}
+      />
     </div>
   );
 }
