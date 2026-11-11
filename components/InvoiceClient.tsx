@@ -320,25 +320,43 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {order.items.map((item) => (
-                  <tr key={item.productId} className="hover:bg-canvas/20 transition-colors">
-                    <td className="py-3 px-4 font-mono text-ink-soft text-[11px]">
-                      CLO-{item.productId.toString().padStart(4, "0")}
-                    </td>
-                    <td className="py-3 px-4 font-medium text-ink">
-                      {item.title}
-                    </td>
-                    <td className="py-3 px-4 text-center text-ink-soft font-mono">
-                      {item.quantity}
-                    </td>
-                    <td className="py-3 px-4 text-right text-ink-soft font-mono">
-                      ${item.price.toFixed(2)}
-                    </td>
-                    <td className="py-3 px-4 text-right font-semibold text-ink font-mono">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
+                {order.items.map((item) => {
+                  const itemKey = item.id || `${item.productId}-${item.selectedSize || ''}-${item.selectedColor || ''}`;
+                  return (
+                    <tr key={itemKey} className="hover:bg-canvas/20 transition-colors">
+                      <td className="py-3 px-4 font-mono text-ink-soft text-[11px]">
+                        {item.sku || `CLO-${item.productId.toString().padStart(4, "0")}`}
+                      </td>
+                      <td className="py-3 px-4 font-medium text-ink">
+                        <div>{item.title}</div>
+                        {(item.selectedSize || item.selectedColor) && (
+                          <div className="flex items-center gap-2 mt-0.5 text-[11px] font-mono text-ink-soft">
+                            {item.selectedSize && (
+                              <span>
+                                Size: <strong className="text-ink font-semibold">{item.selectedSize}</strong>
+                              </span>
+                            )}
+                            {item.selectedSize && item.selectedColor && <span>&bull;</span>}
+                            {item.selectedColor && (
+                              <span>
+                                Color: <strong className="text-ink font-semibold">{item.selectedColor}</strong>
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-center text-ink-soft font-mono">
+                        {item.quantity}
+                      </td>
+                      <td className="py-3 px-4 text-right text-ink-soft font-mono">
+                        ${item.price.toFixed(2)}
+                      </td>
+                      <td className="py-3 px-4 text-right font-semibold text-ink font-mono">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

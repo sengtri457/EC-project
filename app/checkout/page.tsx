@@ -786,19 +786,32 @@ export default function CheckoutPage() {
 
             {/* Items list */}
             <div className="divide-y divide-border/60 max-h-64 overflow-y-auto pr-1">
-              {items.map((item) => (
-                <div key={item.productId} className="py-2.5 flex justify-between items-center text-xs">
-                  <div>
-                    <h4 className="font-medium text-ink line-clamp-1">{item.title}</h4>
-                    <span className="text-[11px] font-mono text-ink-soft">
-                      Qty: {item.quantity} × ${item.price.toFixed(2)}
+              {items.map((item) => {
+                const itemKey = item.id || `${item.productId}-${item.selectedSize || ''}-${item.selectedColor || ''}`;
+                return (
+                  <div key={itemKey} className="py-2.5 flex justify-between items-center text-xs">
+                    <div>
+                      <h4 className="font-medium text-ink line-clamp-1">{item.title}</h4>
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] font-mono text-ink-soft">
+                        <span>Qty: {item.quantity} &times; ${item.price.toFixed(2)}</span>
+                        {item.selectedSize && (
+                          <span className="bg-backdrop px-1.5 py-0.2 border border-border text-ink font-semibold">
+                            Size: {item.selectedSize}
+                          </span>
+                        )}
+                        {item.selectedColor && (
+                          <span className="bg-backdrop px-1.5 py-0.2 border border-border text-ink-soft">
+                            Color: {item.selectedColor}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="font-mono font-semibold text-ink">
+                      ${(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
-                  <span className="font-mono font-semibold text-ink">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pricing breakdown */}

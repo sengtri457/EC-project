@@ -15,6 +15,30 @@ import { getStorageItem, setStorageItem } from "@/lib/storage";
 
 const CART_STORAGE_KEY = "cart";
 
+export function getCartItemKey(item: {
+  productId: number;
+  variantId?: number;
+  selectedSize?: string;
+  selectedColor?: string;
+  id?: string;
+}): string {
+  if (item.id) return item.id;
+  const parts = [
+    item.productId,
+    item.variantId ?? "",
+    item.selectedSize ?? "",
+    item.selectedColor ?? "",
+  ];
+  return parts.filter(Boolean).join("-");
+}
+
+function matchesItem(item: CartItem, idOrProductId: string | number): boolean {
+  if (item.id && item.id === String(idOrProductId)) return true;
+  if (getCartItemKey(item) === String(idOrProductId)) return true;
+  if (typeof idOrProductId === "number" && item.productId === idOrProductId) return true;
+  return false;
+}
+
 type CartState = {
   items: CartItem[];
   isLoaded: boolean;
@@ -23,10 +47,10 @@ type CartState = {
 type CartAction =
   | { type: "LOAD"; payload: CartItem[] }
   | { type: "ADD"; payload: { item: Omit<CartItem, "quantity">; quantity: number; maxStock?: number } }
-  | { type: "UPDATE_QTY"; payload: { productId: number; quantity: number; maxStock?: number } }
-  | { type: "REMOVE"; payload: { productId: number } }
-  | { type: "TOGGLE_SELECT"; payload: { productId: number } }
-  | { type: "SET_SELECT"; payload: { productId: number; selected: boolean } }
+  | { type: "UPDATE_QTY"; payload: { idOrProductId: string | number; quantity: number; maxStock?: number } }
+  | { type: "REMOVE"; payload: { idOrProductId: string | number } }
+  | { type: "TOGGLE_SELECT"; payload: { idOrProductId: string | number } }
+  | { type: "SET_SELECT"; payload: { idOrProductId: string | number; selected: boolean } }
   | { type: "TOGGLE_SELECT_ALL"; payload: { selected?: boolean } }
   | { type: "REMOVE_SELECTED" }
   | { type: "CLEAR" };
@@ -38,6 +62,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         ...state,
         items: action.payload.map((item) => ({
           ...item,
+          id: item.id || getCartItemKey(item),
           selected: item.selected ?? true,
         })),
         isLoaded: true,
@@ -45,19 +70,24 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 
     case "ADD": {
       const { item, quantity, maxStock } = action.payload;
-      const existingIndex = state.items.findIndex((i) => i.productId === item.productId);
+      const itemKey = getCartItemKey(item);
+      const existingIndex = state.items.findIndex(
+        (i) => i.id === itemKey || getCartItemKey(i) === itemKey
+      );
 
       if (existingIndex > -1) {
         const currentQty = state.items[existingIndex].quantity;
         let newQty = currentQty + quantity;
-        if (maxStock !== undefined && newQty > maxStock) {
-          newQty = maxStock;
+        const effectiveMax = maxStock ?? state.items[existingIndex].maxStock;
+        if (effectiveMax !== undefined && newQty > effectiveMax) {
+          newQty = effectiveMax;
         }
 
         const nextItems = [...state.items];
         nextItems[existingIndex] = {
           ...nextItems[existingIndex],
           quantity: newQty,
+          maxStock: effectiveMax,
           selected: true,
         };
         return { ...state, items: nextItems };
@@ -68,48 +98,56 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         initialQty = maxStock;
       }
 
+      const newItem: CartItem = {
+        id: itemKey,
+        productId: item.productId,
+        variantId: item.variantId,
+        sku: item.sku,
+        selectedSize: item.selectedSize,
+        selectedColor: item.selectedColor,
+        title: item.title,
+        price: item.price,
+        thumbnail: item.thumbnail,
+        quantity: initialQty,
+        maxStock: maxStock,
+        selected: true,
+      };
+
       return {
         ...state,
-        items: [
-          ...state.items,
-          {
-            productId: item.productId,
-            title: item.title,
-            price: item.price,
-            thumbnail: item.thumbnail,
-            quantity: initialQty,
-            selected: true,
-          },
-        ],
+        items: [...state.items, newItem],
       };
     }
 
     case "UPDATE_QTY": {
-      const { productId, quantity, maxStock } = action.payload;
+      const { idOrProductId, quantity, maxStock } = action.payload;
       if (quantity <= 0) {
         return {
           ...state,
-          items: state.items.filter((i) => i.productId !== productId),
+          items: state.items.filter((i) => !matchesItem(i, idOrProductId)),
         };
-      }
-
-      let validQty = quantity;
-      if (maxStock !== undefined && validQty > maxStock) {
-        validQty = maxStock;
       }
 
       return {
         ...state,
-        items: state.items.map((item) =>
-          item.productId === productId ? { ...item, quantity: validQty } : item
-        ),
+        items: state.items.map((item) => {
+          if (matchesItem(item, idOrProductId)) {
+            const effectiveMax = maxStock ?? item.maxStock;
+            let validQty = quantity;
+            if (effectiveMax !== undefined && validQty > effectiveMax) {
+              validQty = effectiveMax;
+            }
+            return { ...item, quantity: validQty };
+          }
+          return item;
+        }),
       };
     }
 
     case "REMOVE": {
       return {
         ...state,
-        items: state.items.filter((i) => i.productId !== action.payload.productId),
+        items: state.items.filter((i) => !matchesItem(i, action.payload.idOrProductId)),
       };
     }
 
@@ -117,7 +155,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return {
         ...state,
         items: state.items.map((item) =>
-          item.productId === action.payload.productId
+          matchesItem(item, action.payload.idOrProductId)
             ? { ...item, selected: item.selected === false ? true : false }
             : item
         ),
@@ -128,7 +166,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return {
         ...state,
         items: state.items.map((item) =>
-          item.productId === action.payload.productId
+          matchesItem(item, action.payload.idOrProductId)
             ? { ...item, selected: action.payload.selected }
             : item
         ),
@@ -172,12 +210,12 @@ interface CartContextType {
   items: CartItem[];
   isLoaded: boolean;
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number, maxStock?: number, showDrawer?: boolean) => void;
-  removeItem: (productId: number) => void;
-  updateQty: (productId: number, quantity: number, maxStock?: number) => void;
+  removeItem: (idOrProductId: string | number) => void;
+  updateQty: (idOrProductId: string | number, quantity: number, maxStock?: number) => void;
   clearCart: () => void;
   // Selection
-  toggleSelectItem: (productId: number) => void;
-  setItemSelected: (productId: number, selected: boolean) => void;
+  toggleSelectItem: (idOrProductId: string | number) => void;
+  setItemSelected: (idOrProductId: string | number, selected: boolean) => void;
   toggleSelectAll: (selected?: boolean) => void;
   removeSelectedItems: () => void;
   selectedItems: CartItem[];
@@ -256,7 +294,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         type: "ADD",
         payload: { item, quantity, maxStock },
       });
-      showToast(`Added "${item.title}" to your bag.`);
+      const variantSuffix = item.selectedSize ? ` (${item.selectedSize})` : "";
+      showToast(`Added "${item.title}${variantSuffix}" to your bag.`);
       if (showDrawer) {
         setIsDrawerOpen(true);
       }
@@ -264,24 +303,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [showToast]
   );
 
-  const removeItem = useCallback((productId: number) => {
-    dispatch({ type: "REMOVE", payload: { productId } });
+  const removeItem = useCallback((idOrProductId: string | number) => {
+    dispatch({ type: "REMOVE", payload: { idOrProductId } });
   }, []);
 
-  const updateQty = useCallback((productId: number, quantity: number, maxStock?: number) => {
-    dispatch({ type: "UPDATE_QTY", payload: { productId, quantity, maxStock } });
+  const updateQty = useCallback((idOrProductId: string | number, quantity: number, maxStock?: number) => {
+    dispatch({ type: "UPDATE_QTY", payload: { idOrProductId, quantity, maxStock } });
   }, []);
 
   const clearCart = useCallback(() => {
     dispatch({ type: "CLEAR" });
   }, []);
 
-  const toggleSelectItem = useCallback((productId: number) => {
-    dispatch({ type: "TOGGLE_SELECT", payload: { productId } });
+  const toggleSelectItem = useCallback((idOrProductId: string | number) => {
+    dispatch({ type: "TOGGLE_SELECT", payload: { idOrProductId } });
   }, []);
 
-  const setItemSelected = useCallback((productId: number, selected: boolean) => {
-    dispatch({ type: "SET_SELECT", payload: { productId, selected } });
+  const setItemSelected = useCallback((idOrProductId: string | number, selected: boolean) => {
+    dispatch({ type: "SET_SELECT", payload: { idOrProductId, selected } });
   }, []);
 
   const toggleSelectAll = useCallback((selected?: boolean) => {

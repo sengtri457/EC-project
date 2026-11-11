@@ -15,6 +15,19 @@ export type Subcategory =
   | "jewelry"
   | "socks";
 
+export type ProductVariant = {
+  id: number;
+  productId: number;
+  sku: string;
+  size?: string;
+  color?: string;
+  colorHex?: string;
+  price?: number;
+  stock: number;
+  isDefault?: boolean;
+  thumbnail?: string;
+};
+
 export type Product = {
   id: number;
   slug?: string;
@@ -31,16 +44,24 @@ export type Product = {
 
   fabric?: string;
   sizes?: string[];
+  colors?: { name: string; hex?: string; thumbnail?: string }[];
+  variants?: ProductVariant[];
   imageWidth?: number;
   imageHeight?: number;
 };
 
 export type CartItem = {
+  id?: string; // unique item key e.g. "1-M-WashedBlue"
   productId: number;
+  variantId?: number;
+  sku?: string;
+  selectedSize?: string;
+  selectedColor?: string;
   title: string;
   price: number;
   thumbnail: string;
   quantity: number;
+  maxStock?: number;
   selected?: boolean;
 };
 

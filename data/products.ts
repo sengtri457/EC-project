@@ -534,18 +534,51 @@ export function getCapsuleProducts(capsuleId: string): Product[] {
     .filter((p): p is Product => p !== undefined);
 }
 
+export function enrichProductWithVariants(product: Product): Product {
+  if (product.variants && product.variants.length > 0) {
+    return product;
+  }
+
+  const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : ["Standard"];
+  const variants = sizes.map((size, index) => {
+    const stockShare = Math.max(1, Math.floor(product.stock / sizes.length));
+    const sizeStock =
+      index === sizes.length - 1
+        ? Math.max(0, product.stock - stockShare * (sizes.length - 1))
+        : stockShare;
+
+    return {
+      id: product.id * 100 + (index + 1),
+      productId: product.id,
+      sku: `CLO-${product.id.toString().padStart(4, "0")}-${size.toUpperCase().replace(/\s+/g, "")}`,
+      size: size,
+      price: product.price,
+      stock: sizeStock,
+      isDefault: index === 0,
+      thumbnail: product.thumbnail,
+    };
+  });
+
+  return {
+    ...product,
+    variants,
+  };
+}
+
 export function getProducts(): Product[] {
-  return products;
+  return products.map(enrichProductWithVariants);
 }
 
 export function getProductById(id: number): Product | undefined {
-  return products.find((p) => p.id === id);
+  const p = products.find((prod) => prod.id === id);
+  return p ? enrichProductWithVariants(p) : undefined;
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug || String(p.id) === slug);
+  const p = products.find((prod) => prod.slug === slug || String(prod.id) === slug);
+  return p ? enrichProductWithVariants(p) : undefined;
 }
 
 export function getCollectionPieces(): Product[] {
-  return products.filter((p) => p.slug !== undefined).slice(0, 4);
+  return products.filter((p) => p.slug !== undefined).slice(0, 4).map(enrichProductWithVariants);
 }

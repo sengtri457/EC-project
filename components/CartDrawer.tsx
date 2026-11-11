@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/context/CartContext";
+import { useCart, getCartItemKey } from "@/context/CartContext";
 import { toKhr } from "@/lib/cambodiaLocations";
 
 export default function CartDrawer() {
@@ -82,36 +82,33 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* Free shipping banner */}
-        <div className="bg-canvas px-6 py-2.5 text-center text-[11px] font-mono text-ink-soft border-b border-border">
-          {selectedSubtotal >= 30 ? (
-            <span className="text-forest font-medium">✓ You qualify for Free Delivery in Phnom Penh</span>
-          ) : (
-            <span>
-              Add <strong className="text-ink font-semibold">${(30 - selectedSubtotal).toFixed(2)}</strong> more for free delivery in Phnom Penh
-            </span>
-          )}
-        </div>
-
-        {/* Items List */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 divide-y divide-border">
+        {/* Drawer Item List */}
+        <div className="flex-1 overflow-y-auto px-6 divide-y divide-border/60">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center py-12">
-              <span className="font-serif text-2xl text-ink-soft/40 italic">Your bag is empty</span>
-              <p className="mt-2 text-xs font-mono text-ink-soft">Discover our catalog and select your pieces.</p>
-              <button
+              <span className="type-label text-xs uppercase tracking-widest text-ink-soft">
+                Bag Empty
+              </span>
+              <p className="mt-2 text-xs text-ink-soft font-mono">
+                No items have been added to your shopping bag.
+              </p>
+              <Link
+                href="/catalog"
                 onClick={closeDrawer}
-                className="mt-6 border border-ink px-6 py-2.5 text-xs font-mono uppercase tracking-wider text-ink hover:bg-canvas transition-colors cursor-pointer"
+                className="type-label mt-6 inline-flex items-center gap-2 border border-ink px-6 py-2.5 text-xs text-ink uppercase tracking-wider hover:bg-canvas transition-colors"
               >
-                Continue Browsing
-              </button>
+                Explore The Catalog &rarr;
+              </Link>
             </div>
           ) : (
             items.map((item) => {
+              const itemKey = item.id || getCartItemKey(item);
               const isSelected = item.selected !== false;
+              const maxStock = item.maxStock ?? 99;
+
               return (
                 <div
-                  key={item.productId}
+                  key={itemKey}
                   className={`flex items-start gap-3 py-4 transition-opacity ${
                     isSelected ? "opacity-100" : "opacity-60"
                   }`}
@@ -124,7 +121,7 @@ export default function CartDrawer() {
                     <input
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() => toggleSelectItem(item.productId)}
+                      onChange={() => toggleSelectItem(itemKey)}
                       className="h-4 w-4 rounded-none accent-ink cursor-pointer"
                       aria-label={`Select ${item.title}`}
                     />
@@ -144,7 +141,7 @@ export default function CartDrawer() {
                       <div className="flex justify-between items-start gap-2">
                         <h4 className="text-xs font-medium text-ink line-clamp-1">{item.title}</h4>
                         <button
-                          onClick={() => removeItem(item.productId)}
+                          onClick={() => removeItem(itemKey)}
                           className="text-ink-soft hover:text-ctrl-red transition-colors cursor-pointer p-0.5"
                           title="Remove piece"
                           aria-label={`Remove ${item.title}`}
@@ -154,7 +151,22 @@ export default function CartDrawer() {
                           </svg>
                         </button>
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5">
+
+                      {/* Variant metadata: Size & Color */}
+                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                        {item.selectedSize && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 bg-backdrop text-ink font-semibold border border-border">
+                            Size: {item.selectedSize}
+                          </span>
+                        )}
+                        {item.selectedColor && (
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 bg-backdrop text-ink-soft border border-border">
+                            Color: {item.selectedColor}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-1">
                         <span className="font-mono text-xs text-ink-soft">
                           ${item.price.toFixed(2)}
                         </span>
@@ -170,8 +182,9 @@ export default function CartDrawer() {
                       <div className="flex items-center border border-border bg-paper">
                         <button
                           type="button"
-                          onClick={() => updateQty(item.productId, item.quantity - 1)}
-                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
+                          onClick={() => updateQty(itemKey, item.quantity - 1, maxStock)}
+                          disabled={item.quantity <= 1}
+                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                           aria-label="Decrease quantity"
                         >
                           -
@@ -181,8 +194,9 @@ export default function CartDrawer() {
                         </span>
                         <button
                           type="button"
-                          onClick={() => updateQty(item.productId, item.quantity + 1)}
-                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas transition-colors cursor-pointer"
+                          onClick={() => updateQty(itemKey, item.quantity + 1, maxStock)}
+                          disabled={item.quantity >= maxStock}
+                          className="h-7 w-7 flex items-center justify-center text-xs text-ink hover:bg-canvas disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                           aria-label="Increase quantity"
                         >
                           +
@@ -208,7 +222,7 @@ export default function CartDrawer() {
                 <span>Selected Subtotal</span>
                 <div className="text-right">
                   <span className="text-ink font-semibold">${selectedSubtotal.toFixed(2)} USD</span>
-                  <span className="text-[10px] text-ink-soft block">≈ {toKhr(selectedSubtotal)}</span>
+                  <span className="text-[10px] text-ink-soft block">&asymp; {toKhr(selectedSubtotal)}</span>
                 </div>
               </div>
               <div className="flex justify-between text-ink-soft text-[11px]">

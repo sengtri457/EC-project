@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCart } from "@/context/CartContext";
+import { useCart, getCartItemKey } from "@/context/CartContext";
 import CartItemRow from "@/components/CartItemRow";
 import OrderSummary from "@/components/OrderSummary";
 import OrderStepper from "@/components/OrderStepper";
@@ -102,9 +102,10 @@ export default function CartPage() {
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
         {/* Item Rows */}
         <div className="space-y-4 lg:col-span-8">
-          {items.map((item) => (
-            <CartItemRow key={item.productId} item={item} />
-          ))}
+          {items.map((item) => {
+            const itemKey = item.id || getCartItemKey(item);
+            return <CartItemRow key={itemKey} item={item} />;
+          })}
 
           <div className="pt-6 flex items-center justify-between border-t border-border">
             <Link

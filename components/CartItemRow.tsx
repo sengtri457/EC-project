@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CartItem } from "@/types";
-import { useCart } from "@/context/CartContext";
+import { useCart, getCartItemKey } from "@/context/CartContext";
 import { getProductById } from "@/data/products";
 
 interface CartItemRowProps {
@@ -13,7 +13,8 @@ interface CartItemRowProps {
 export default function CartItemRow({ item }: CartItemRowProps) {
   const { updateQty, removeItem, toggleSelectItem } = useCart();
   const product = getProductById(item.productId);
-  const maxStock = product ? product.stock : 99;
+  const maxStock = item.maxStock ?? (product ? product.stock : 99);
+  const itemKey = item.id || getCartItemKey(item);
 
   const isSelected = item.selected !== false;
   const lineTotal = Number((item.price * item.quantity).toFixed(2));
@@ -36,7 +37,7 @@ export default function CartItemRow({ item }: CartItemRowProps) {
           <input
             type="checkbox"
             checked={isSelected}
-            onChange={() => toggleSelectItem(item.productId)}
+            onChange={() => toggleSelectItem(itemKey)}
             aria-label={`Select ${item.title} for checkout`}
             className="h-4 w-4 rounded-none accent-ink cursor-pointer transition-transform active:scale-90"
           />
@@ -54,21 +55,49 @@ export default function CartItemRow({ item }: CartItemRowProps) {
 
         <div>
           <div className="flex items-center gap-2">
-            <span className="type-display text-base text-ink line-clamp-1">
+            <Link
+              href={`/products/${item.productId}`}
+              className="type-display text-base text-ink line-clamp-1 hover:underline decoration-ctrl-red"
+            >
               {item.title}
-            </span>
+            </Link>
             {!isSelected && (
               <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 bg-backdrop text-ink-soft border border-border">
                 Saved for later
               </span>
             )}
           </div>
-          <p className="mt-1 text-xs text-ink-soft font-mono">
-            Unit Price: <span className="font-semibold text-ink">${item.price.toFixed(2)}</span>
-          </p>
-          <span className="text-[11px] text-ink-soft font-mono">
-            Available Batch: {maxStock} units
-          </span>
+
+          {/* Variant Specifications: Size & Color */}
+          <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs font-mono">
+            {item.selectedSize && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-backdrop border border-border text-ink font-semibold">
+                <span className="text-ink-soft text-[10px]">SIZE:</span>
+                <span>{item.selectedSize}</span>
+              </span>
+            )}
+            {item.selectedColor && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-backdrop border border-border text-ink-soft">
+                <span className="text-[10px]">COLOR:</span>
+                <span className="text-ink">{item.selectedColor}</span>
+              </span>
+            )}
+            {item.sku && (
+              <span className="text-[10px] text-ink-soft/70">
+                SKU: {item.sku}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-1 flex items-center gap-3 text-xs text-ink-soft font-mono">
+            <p>
+              Unit: <span className="font-semibold text-ink">${item.price.toFixed(2)}</span>
+            </p>
+            <span>&bull;</span>
+            <span className="text-[11px]">
+              Available: {maxStock} units
+            </span>
+          </div>
         </div>
       </div>
 
@@ -78,10 +107,10 @@ export default function CartItemRow({ item }: CartItemRowProps) {
         <div className="flex h-9 items-center border border-ink bg-paper">
           <button
             type="button"
-            onClick={() => updateQty(item.productId, item.quantity - 1, maxStock)}
+            onClick={() => updateQty(itemKey, item.quantity - 1, maxStock)}
             disabled={item.quantity <= 1}
             aria-label="Decrease quantity"
-            className="flex h-full w-8 items-center justify-center text-ink hover:text-ctrl-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-mono"
+            className="flex h-full w-8 items-center justify-center text-ink hover:text-ctrl-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-mono cursor-pointer"
           >
             -
           </button>
@@ -90,10 +119,10 @@ export default function CartItemRow({ item }: CartItemRowProps) {
           </span>
           <button
             type="button"
-            onClick={() => updateQty(item.productId, item.quantity + 1, maxStock)}
+            onClick={() => updateQty(itemKey, item.quantity + 1, maxStock)}
             disabled={item.quantity >= maxStock}
             aria-label="Increase quantity"
-            className="flex h-full w-8 items-center justify-center text-ink hover:text-ctrl-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-mono"
+            className="flex h-full w-8 items-center justify-center text-ink hover:text-ctrl-red disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-mono cursor-pointer"
           >
             +
           </button>
@@ -109,8 +138,8 @@ export default function CartItemRow({ item }: CartItemRowProps) {
           </span>
           <button
             type="button"
-            onClick={() => removeItem(item.productId)}
-            className="mt-0.5 text-[11px] font-mono text-ink-soft hover:text-ctrl-red transition-colors underline"
+            onClick={() => removeItem(itemKey)}
+            className="mt-0.5 text-[11px] font-mono text-ink-soft hover:text-ctrl-red transition-colors underline cursor-pointer"
           >
             Remove
           </button>
