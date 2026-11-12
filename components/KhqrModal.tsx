@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { checkPaymentStatus, verifyPayment } from "@/lib/api";
-import { buildBakongKhqr, extractAccountIdFromKhqr } from "@/lib/khqr";
+import { buildBakongKhqr } from "@/lib/khqr";
 
 interface KhqrModalProps {
   isOpen: boolean;
@@ -31,41 +31,31 @@ export default function KhqrModal({
   const [isPaid, setIsPaid] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  
-  // Custom account override for testing with real personal ABA / Bakong accounts
-  const [customAccount, setCustomAccount] = useState("");
-  const [isCustomizing, setIsCustomizing] = useState(false);
-
-  const detectedBackendAccount = React.useMemo(() => {
-    return extractAccountIdFromKhqr(khqrPayload);
-  }, [khqrPayload]);
-
-  const displayAccount = customAccount || detectedBackendAccount || "Official Merchant";
 
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Compute active QR payload (either from backend, or dynamically for user's personal Bakong account)
+  // Compute active QR payload: uses backend generated payload if present, or builds with configured env
   const activePayload = React.useMemo(() => {
-    if (customAccount.trim()) {
-      return buildBakongKhqr({
-        accountId: customAccount.trim(),
-        merchantName: "Clothes Store",
-        merchantCity: "Phnom Penh",
-        amount: amountUsd,
-        currency: "USD",
-        billNumber: orderNumber,
-      }).qr;
-    }
     if (khqrPayload) return khqrPayload;
+
+    const accountId =
+      process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID ||
+      process.env.BAKONG_ACCOUNT_ID ||
+      "";
+    const merchantName =
+      process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME ||
+      process.env.BAKONG_MERCHANT_NAME ||
+      "Clothes Apparel Co";
+
     return buildBakongKhqr({
-      accountId: "clothes@abaa",
-      merchantName: "Clothes Store",
+      accountId: accountId || "clothes@abaa",
+      merchantName: merchantName,
       merchantCity: "Phnom Penh",
       amount: amountUsd,
       currency: "USD",
       billNumber: orderNumber,
     }).qr;
-  }, [customAccount, khqrPayload, amountUsd, orderNumber]);
+  }, [khqrPayload, amountUsd, orderNumber]);
 
   // Countdown timer
   useEffect(() => {
@@ -85,7 +75,7 @@ export default function KhqrModal({
     return () => clearInterval(timer);
   }, [isOpen, isPaid]);
 
-  // Polling loop to check if customer scanned and completed payment
+  // Polling loop to check if customer completed payment
   useEffect(() => {
     if (!isOpen || !paymentId || isPaid) return;
 
@@ -100,7 +90,7 @@ export default function KhqrModal({
           }, 1200);
         }
       } catch {
-        // Silent failure during polling to avoid interrupting customer experience
+        // Silent failure during polling to avoid interrupting checkout
       }
     };
 
@@ -118,7 +108,7 @@ export default function KhqrModal({
   const seconds = secondsRemaining % 60;
   const timeFormatted = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-  // Manual instant verification trigger for user testing
+  // Instant verification trigger for testing
   const handleInstantVerify = async () => {
     setIsVerifying(true);
     setErrorMessage(null);
@@ -183,7 +173,7 @@ export default function KhqrModal({
             </p>
           </div>
         ) : (
-          <div className="mt-4 space-y-3.5">
+          <div className="mt-4 space-y-4">
             {/* Amount details */}
             <div>
               <span className="text-2xl font-mono font-extrabold text-ink">
@@ -197,11 +187,11 @@ export default function KhqrModal({
               </p>
             </div>
 
-            {/* QR Code Container */}
+            {/* Clean QR Code Container */}
             <div className="mx-auto inline-flex flex-col items-center justify-center p-3 bg-white border-2 border-ink shadow-sm">
               <QRCodeSVG
                 value={activePayload}
-                size={190}
+                size={200}
                 level="M"
                 includeMargin={false}
               />
@@ -209,50 +199,6 @@ export default function KhqrModal({
                 National Bank of Cambodia
               </div>
             </div>
-
-            {/* Account Info Pill */}
-            <div className="bg-canvas border border-border px-3 py-1.5 text-[11px] font-mono text-ink-soft flex items-center justify-between">
-              <span className="truncate">
-                Merchant: <strong className="text-ink">{displayAccount}</strong>
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsCustomizing((prev) => !prev)}
-                className="text-ctrl-red hover:underline text-[10px] uppercase font-semibold shrink-0 ml-2 cursor-pointer"
-              >
-                {isCustomizing ? "Close" : "Override"}
-              </button>
-            </div>
-
-            {/* Optional Custom Account Input for Real App Scanning */}
-            {isCustomizing && (
-              <div className="bg-canvas border border-border p-3 text-left space-y-2 text-xs font-mono">
-                <label className="text-[10px] font-semibold uppercase text-ink block">
-                  Scan with your real Bank App:
-                </label>
-                <p className="text-[10px] text-ink-soft leading-tight">
-                  Standard bank apps (ABA, Wing, Bakong) require an account registered with NBC. Enter your personal Bakong/ABA ID to scan and verify:
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={customAccount}
-                    onChange={(e) => setCustomAccount(e.target.value)}
-                    placeholder="e.g. yourname@abaa"
-                    className="flex-1 border border-border bg-paper px-2.5 py-1.5 text-xs text-ink focus:border-ink outline-none"
-                  />
-                  {customAccount && (
-                    <button
-                      type="button"
-                      onClick={() => setCustomAccount("")}
-                      className="text-[10px] text-ink-soft hover:text-ink px-1"
-                    >
-                      Reset
-                    </button>
-                  )}
-                </div>
-              </div>
-            )}
 
             {/* Timer and instructions */}
             <div className="space-y-1 font-mono text-xs">
