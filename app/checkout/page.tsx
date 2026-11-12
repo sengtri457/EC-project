@@ -100,7 +100,7 @@ export default function CheckoutPage() {
       return subtotal >= 30 ? 0 : 1.5;
     }
     if (method === "phnom_penh_standard") {
-      return subtotal >= 30 ? 0 : 1.0;
+      return 0; // Phnom Penh Standard is Free Delivery
     }
     if (method === "provincial") {
       return 2.5;
@@ -636,11 +636,11 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <div className="text-right font-mono">
-                        <span className="text-xs font-semibold text-ink">
-                          {subtotal >= 30 ? "FREE" : "$1.00"}
+                        <span className="text-xs font-semibold text-forest">
+                          FREE
                         </span>
-                        <span className="block text-[10px] text-ink-soft">
-                          {subtotal >= 30 ? "(Order over $30)" : `≈ ${toKhr(1.0)}`}
+                        <span className="block text-[10px] text-forest/80 font-mono">
+                          Free Delivery
                         </span>
                       </div>
                     </label>

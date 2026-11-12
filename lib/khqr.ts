@@ -25,8 +25,27 @@ function formatTlv(tag: string, value: string): string {
   return `${tag}${lenStr}${value}`;
 }
 
+export function getAcquiringBank(accountId: string): string {
+  if (accountId.includes("@")) {
+    const domain = accountId.split("@")[1].trim().toLowerCase();
+    const mapping: Record<string, string> = {
+      bkrt: "Bakong",
+      abaa: "ABA Bank",
+      wing: "Wing Bank",
+      aclb: "ACLEDA Bank",
+      cani: "Canadia Bank",
+      stpc: "Sathapana Bank",
+      ftbc: "FTB Bank",
+      vdbc: "Vattanac Bank",
+      ppcb: "PPCBank",
+    };
+    return mapping[domain] || "Bakong";
+  }
+  return "Bakong";
+}
+
 export interface KhqrOptions {
-  accountId: string; // e.g. "sengtri@abaa" or "012345678@abaa"
+  accountId: string; // e.g. "sengtri@abaa" or "user@bkrt"
   merchantName?: string;
   merchantCity?: string;
   amount: number;
@@ -34,6 +53,7 @@ export interface KhqrOptions {
   billNumber?: string;
   storeLabel?: string;
   phoneNumber?: string;
+  acquiringBank?: string;
   expirationDays?: number;
 }
 
@@ -43,13 +63,14 @@ export interface KhqrOptions {
 export function buildBakongKhqr(options: KhqrOptions): { qr: string; md5?: string } {
   const {
     accountId,
-    merchantName = "Clothes Store",
+    merchantName = "Clothes Apparel Co",
     merchantCity = "Phnom Penh",
     amount,
     currency = "USD",
     billNumber = "",
-    storeLabel = "Clothes Store",
+    storeLabel = "Clothes",
     phoneNumber = "",
+    acquiringBank = "",
     expirationDays = 1,
   } = options;
 
@@ -59,10 +80,12 @@ export function buildBakongKhqr(options: KhqrOptions): { qr: string; md5?: strin
   // Tag 01: Initiation method (12 = Dynamic QR)
   payload += formatTlv("01", "12");
 
-  // Tag 29: Merchant Account Info for Individual / Solo Bakong Accounts
-  // Sub-tag 00 contains the registered Bakong Account ID only
-  const subTag00 = formatTlv("00", accountId.trim());
-  payload += formatTlv("29", subTag00);
+  // Tag 29: Merchant Account Info with Sub-tag 00 (Account ID) & Sub-tag 02 (Acquiring Bank)
+  const cleanAccountId = accountId.trim();
+  const subTag00 = formatTlv("00", cleanAccountId);
+  const bank = (acquiringBank || getAcquiringBank(cleanAccountId)).trim();
+  const subTag02 = formatTlv("02", bank);
+  payload += formatTlv("29", subTag00 + subTag02);
 
   // Tag 52: Merchant Category Code (5999 for retail / apparel)
   payload += formatTlv("52", "5999");
