@@ -14,7 +14,8 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
     cpus: 1,
-  },
+    agentUpgrade: "security",
+  } as any,
 };
 
 export default nextConfig;
