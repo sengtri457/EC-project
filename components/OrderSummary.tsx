@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -21,6 +24,7 @@ export default function OrderSummary({
   const progressPercent =
     subtotal > 0 ? Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100)) : 0;
 
+  const { user } = useAuth();
   const isDisabled = disabledCheckout || itemCount === 0;
 
   return (
@@ -102,6 +106,13 @@ export default function OrderSummary({
             >
               <span>Select Items to Checkout</span>
             </button>
+          ) : !user ? (
+            <Link
+              href="/login?redirect=/checkout"
+              className="type-label flex h-13 w-full items-center justify-center bg-ink py-3.5 text-center text-xs text-paper uppercase tracking-widest shadow-sm transition-all hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ctrl-red"
+            >
+              <span>Sign In to Checkout ({itemCount})</span>
+            </Link>
           ) : (
             <Link
               href="/checkout"

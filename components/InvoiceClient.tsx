@@ -9,6 +9,8 @@ import { fetchOrderDetail } from "@/lib/api";
 import { downloadInvoice } from "@/lib/downloadInvoice";
 import { toKhr } from "@/lib/cambodiaLocations";
 import OrderStepper from "@/components/OrderStepper";
+import { QRCodeSVG } from "qrcode.react";
+import { buildBakongKhqr } from "@/lib/khqr";
 
 interface InvoiceClientProps {
   orderId: string;
@@ -385,16 +387,48 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
 
           {/* Totals Section with Dual Currency (USD & KHR) */}
           <div className="mt-6 border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-            <div className="text-xs font-mono text-ink-soft max-w-sm space-y-1">
+            <div className="text-xs font-mono text-ink-soft max-w-sm space-y-2">
               <p className="font-semibold text-ink text-[11px] uppercase tracking-wider">
                 Certified Store Invoice
               </p>
               <p className="text-[11px] leading-relaxed">
                 Thank you for your order. For assistance or exchange inquiries, reach our team via Telegram or telephone.
               </p>
-              <p className="text-[10px] text-ink-soft pt-1">
+              <p className="text-[10px] text-ink-soft pt-0.5">
                 Clothes™ Cambodia &bull; Contact: 012 345 678 &bull; Telegram: @clothescambodia
               </p>
+
+              {/* Official NBC Bakong KHQR QR Code on Invoice */}
+              {order.customer.paymentMethod === "khqr" && (
+                <div className="mt-3 flex items-center gap-3 border border-border bg-canvas/40 p-2.5">
+                  <div className="bg-white p-1 border border-border shrink-0 shadow-xs">
+                    <QRCodeSVG
+                      value={buildBakongKhqr({
+                        accountId: process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID || "clothes@abaa",
+                        merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "Clothes Apparel Co",
+                        merchantCity: "Phnom Penh",
+                        amount: order.total > 0 ? order.total : 1,
+                        currency: "USD",
+                        billNumber: order.id,
+                      }).qr}
+                      size={72}
+                      level="M"
+                      includeMargin={false}
+                    />
+                  </div>
+                  <div className="text-[10px] font-mono text-ink-soft leading-tight">
+                    <span className="font-bold text-ink block uppercase text-[10px] text-ctrl-red">
+                      Official Bakong KHQR
+                    </span>
+                    <span className="block mt-0.5">
+                      National Bank of Cambodia EMVCo Standard
+                    </span>
+                    <span className="block text-ink font-semibold mt-1">
+                      Ref: {order.id}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="w-full sm:w-80 space-y-2 text-xs font-mono">

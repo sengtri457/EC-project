@@ -13,13 +13,15 @@ import { CAMBODIA_PROVINCES, PHNOM_PENH_KHANS, toKhr, KHR_RATE } from "@/lib/cam
 import OrderStepper from "@/components/OrderStepper";
 import { submitOrderCheckout } from "@/lib/api";
 import KhqrModal from "@/components/KhqrModal";
+import { QRCodeSVG } from "qrcode.react";
+import { buildBakongKhqr } from "@/lib/khqr";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { isLoaded, selectedItems: items, selectedItemCount: itemCount, selectedSubtotal: subtotal, removeSelectedItems } = useCart();
-  const { user, loginWithDemo } = useAuth();
+  const { isLoaded: isAuthLoaded, user, loginWithDemo } = useAuth();
 
   const [formData, setFormData] = useState<CheckoutFormState>({
     name: "",
@@ -87,7 +89,14 @@ export default function CheckoutPage() {
     }
   }, [formData.cityProvince]);
 
-  // Guard: Redirect to cart if empty
+  // Guard 1: Redirect to login if user is not authenticated
+  useEffect(() => {
+    if (isAuthLoaded && !user) {
+      router.replace("/login?redirect=/checkout");
+    }
+  }, [isAuthLoaded, user, router]);
+
+  // Guard 2: Redirect to cart if empty
   useEffect(() => {
     if (!isSubmitted && isLoaded && items.length === 0) {
       router.replace("/cart");
@@ -111,6 +120,17 @@ export default function CheckoutPage() {
   const currentShippingCost = getShippingCost(formData.shippingMethod || "phnom_penh_express");
   const calculatedTotal = Number((subtotal + currentShippingCost).toFixed(2));
   const calculatedTotalKhr = Math.round(calculatedTotal * KHR_RATE);
+
+  const checkoutKhqrPreview = (function() {
+    return buildBakongKhqr({
+      accountId: process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID || "clothes@abaa",
+      merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "Clothes Apparel Co",
+      merchantCity: "Phnom Penh",
+      amount: calculatedTotal > 0 ? calculatedTotal : 1,
+      currency: "USD",
+      billNumber: "PREVIEW",
+    }).qr;
+  })();
 
   const handleChange = (field: keyof CheckoutFormState, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -262,16 +282,26 @@ export default function CheckoutPage() {
         router.push(`/invoice/${orderNumber}`);
       });
     } catch (err: any) {
-      console.warn("Backend checkout error, falling back to local order:", err);
-      if (err.message && !err.message.includes("Failed to fetch")) {
-        setServerError(err.message);
+      console.warn("Backend checkout error, using local/offline checkout flow:", err);
+      // Save order locally
+      saveOrder(newOrder);
+
+      // ALWAYS open the interactive Bakong modal if KHQR is selected!
+      if (formData.paymentMethod === "khqr") {
+        setKhqrData({
+          isOpen: true,
+          paymentId: `pay-${orderId}`,
+          orderNumber: orderId,
+          payload: checkoutKhqrPreview,
+          amountUsd: calculatedTotal,
+          amountKhr: calculatedTotalKhr,
+        });
         setIsSubmittingServer(false);
         return;
       }
 
-      // Offline fallback: save order locally and proceed
+      // Offline COD or Card: complete and proceed to invoice
       setIsSubmitted(true);
-      saveOrder(newOrder);
       removeSelectedItems();
       setIsSubmittingServer(false);
       startTransition(() => {
@@ -288,6 +318,19 @@ export default function CheckoutPage() {
       router.push(`/invoice/${orderNumber}`);
     });
   };
+
+  if (!isAuthLoaded || !user) {
+    return (
+      <div className="mx-auto flex min-h-[50vh] max-w-7xl items-center justify-center px-4 py-16">
+        <div className="flex flex-col items-center gap-3 text-ink-soft">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-ink border-t-transparent" />
+          <p className="text-xs font-mono uppercase tracking-wider">
+            {!isAuthLoaded ? "Verifying authentication..." : "Sign in required. Redirecting to login..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isLoaded || (items.length === 0 && !isSubmitted)) {
     return (
@@ -742,11 +785,13 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="h-24 w-24 border border-border bg-white p-1.5 shrink-0 flex flex-col items-center justify-center">
-                      {/* Crisp SVG QR Icon Simulation */}
-                      <svg viewBox="0 0 24 24" className="h-full w-full text-ink fill-current">
-                        <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm8-2h2v2h-2v-2zm4 0h2v2h-2v-2zm-4 4h2v2h-2v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0 4h2v2h-2v-2zm-8 2h2v2h-2v-2zm4 0h2v2h-2v-2zm6-10h2v2h-2v-2z" />
-                      </svg>
+                    <div className="border-2 border-ink bg-white p-2 shrink-0 flex flex-col items-center justify-center shadow-xs">
+                      <QRCodeSVG
+                        value={checkoutKhqrPreview}
+                        size={84}
+                        level="M"
+                        includeMargin={false}
+                      />
                     </div>
 
                     <div className="space-y-1 text-xs font-mono text-ink-soft">
