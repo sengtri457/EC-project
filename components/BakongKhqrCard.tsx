@@ -6,6 +6,8 @@ import { QRCodeSVG } from "qrcode.react";
 export interface BakongKhqrCardProps {
   payload: string;
   merchantName?: string;
+  amount?: number;
+  amountKhr?: number;
   currency?: "USD" | "KHR";
   size?: number;
   className?: string;
@@ -72,19 +74,23 @@ const RIEL_CENTER_BADGE_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(
 /**
  * BakongKhqrCard
  * 1:1 reproduction of the official NBC Bakong KHQR standee / mobile card design
+ * Displays dynamic Merchant Name (default: DevClothes) and dynamic Price
  */
 export default function BakongKhqrCard({
   payload,
   merchantName,
+  amount,
+  amountKhr,
+  currency = "USD",
   size = 220,
   className = "",
 }: BakongKhqrCardProps) {
-  // Resolve merchant name: prioritize prop -> env -> fallback
+  // Resolve merchant name dynamically: prioritize prop -> env -> fallback "DevClothes"
   const resolvedMerchantName =
     merchantName ||
     process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME ||
     process.env.BAKONG_MERCHANT_NAME ||
-    "Maneth Pak";
+    "DevClothes";
 
   const badgeSize = Math.round(size * 0.17);
 
@@ -104,10 +110,32 @@ export default function BakongKhqrCard({
         />
       </div>
 
-      {/* 2. Merchant Name Header (Strictly NO account ID shown) */}
+      {/* 2. Dynamic Merchant Name & Dynamic Price Header (Strictly NO account ID shown) */}
       <div className="px-5 pt-3.5 pb-2">
-        <div className="text-gray-800 text-[13px] md:text-sm font-medium tracking-normal truncate">
-          {resolvedMerchantName}
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="text-gray-900 text-[13px] md:text-sm font-semibold tracking-tight truncate">
+              {resolvedMerchantName}
+            </div>
+            {amountKhr !== undefined && amountKhr > 0 && (
+              <div className="text-[10px] md:text-[11px] font-mono text-gray-500 font-medium mt-0.5">
+                ≈ {amountKhr.toLocaleString()} KHR
+              </div>
+            )}
+          </div>
+
+          {amount !== undefined && amount > 0 && (
+            <div className="text-right shrink-0">
+              <div className="text-gray-900 font-mono font-bold text-sm md:text-base leading-tight">
+                {currency === "KHR"
+                  ? `${amount.toLocaleString()} ៛`
+                  : `$${amount.toFixed(2)}`}
+              </div>
+              <div className="text-[9px] md:text-[10px] font-mono text-gray-500 uppercase tracking-wider font-semibold">
+                {currency}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

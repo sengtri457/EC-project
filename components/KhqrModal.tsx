@@ -45,7 +45,7 @@ export default function KhqrModal({
     const merchantName =
       process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME ||
       process.env.BAKONG_MERCHANT_NAME ||
-      "Clothes Apparel Co";
+      "DevClothes";
 
     return buildBakongKhqr({
       accountId: accountId || "clothes@abaa",
@@ -174,26 +174,21 @@ export default function KhqrModal({
           </div>
         ) : (
           <div className="mt-4 space-y-4">
-            {/* Amount details */}
-            <div>
-              <span className="text-2xl font-mono font-extrabold text-ink">
-                ${amountUsd.toFixed(2)} USD
-              </span>
-              <p className="text-xs font-mono text-terracotta font-semibold mt-0.5">
-                ≈ {amountKhr.toLocaleString()} KHR
-              </p>
-              <p className="text-[11px] font-mono text-ink-soft mt-1">
-                Ref: <span className="font-bold text-ink">{orderNumber}</span>
-              </p>
-            </div>
-
-            {/* Official NBC Bakong KHQR Standee Card */}
+            {/* Official NBC Bakong KHQR Standee Card with Dynamic DevClothes & Dynamic Price */}
             <div className="py-1">
               <BakongKhqrCard
                 payload={activePayload}
-                size={200}
+                merchantName={process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "DevClothes"}
+                amount={amountUsd}
+                amountKhr={amountKhr}
+                currency="USD"
+                size={210}
                 className="shadow-md"
               />
+            </div>
+
+            <div className="text-[11px] font-mono text-ink-soft">
+              Order Ref: <span className="font-bold text-ink">{orderNumber}</span>
             </div>
 
             {/* Timer and instructions */}

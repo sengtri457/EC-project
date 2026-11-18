@@ -405,12 +405,16 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                     <BakongKhqrCard
                       payload={buildBakongKhqr({
                         accountId: process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID || "clothes@abaa",
-                        merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "Clothes Apparel Co",
+                        merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "DevClothes",
                         merchantCity: "Phnom Penh",
                         amount: order.total > 0 ? order.total : 1,
                         currency: "USD",
                         billNumber: order.id,
                       }).qr}
+                      merchantName={process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "DevClothes"}
+                      amount={order.total}
+                      amountKhr={order.totalKhr}
+                      currency="USD"
                       size={130}
                       className="shadow-xs"
                     />

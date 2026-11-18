@@ -124,7 +124,7 @@ export default function CheckoutPage() {
   const checkoutKhqrPreview = (function() {
     return buildBakongKhqr({
       accountId: process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID || "clothes@abaa",
-      merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "Clothes Apparel Co",
+      merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "DevClothes",
       merchantCity: "Phnom Penh",
       amount: calculatedTotal > 0 ? calculatedTotal : 1,
       currency: "USD",
@@ -788,6 +788,10 @@ export default function CheckoutPage() {
                     <div className="shrink-0">
                       <BakongKhqrCard
                         payload={checkoutKhqrPreview}
+                        merchantName={process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "DevClothes"}
+                        amount={calculatedTotal}
+                        amountKhr={calculatedTotalKhr}
+                        currency="USD"
                         size={150}
                         className="shadow-sm"
                       />

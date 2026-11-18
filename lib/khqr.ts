@@ -63,12 +63,12 @@ export interface KhqrOptions {
 export function buildBakongKhqr(options: KhqrOptions): { qr: string; md5?: string } {
   const {
     accountId,
-    merchantName = "Clothes Apparel Co",
+    merchantName = "DevClothes",
     merchantCity = "Phnom Penh",
     amount,
     currency = "USD",
     billNumber = "",
-    storeLabel = "Clothes",
+    storeLabel = "DevClothes",
     phoneNumber = "",
     acquiringBank = "",
     expirationDays = 1,
