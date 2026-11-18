@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { QRCodeSVG } from "qrcode.react";
 import { checkPaymentStatus, verifyPayment } from "@/lib/api";
 import { buildBakongKhqr } from "@/lib/khqr";
+import BakongKhqrCard from "@/components/BakongKhqrCard";
 
 interface KhqrModalProps {
   isOpen: boolean;
@@ -187,17 +187,13 @@ export default function KhqrModal({
               </p>
             </div>
 
-            {/* Clean QR Code Container */}
-            <div className="mx-auto inline-flex flex-col items-center justify-center p-3 bg-white border-2 border-ink shadow-sm">
-              <QRCodeSVG
-                value={activePayload}
+            {/* Official NBC Bakong KHQR Standee Card */}
+            <div className="py-1">
+              <BakongKhqrCard
+                payload={activePayload}
                 size={200}
-                level="M"
-                includeMargin={false}
+                className="shadow-md"
               />
-              <div className="mt-2 text-[10px] font-mono tracking-widest text-ink/70 font-semibold uppercase">
-                National Bank of Cambodia
-              </div>
             </div>
 
             {/* Timer and instructions */}

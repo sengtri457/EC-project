@@ -13,7 +13,7 @@ import { CAMBODIA_PROVINCES, PHNOM_PENH_KHANS, toKhr, KHR_RATE } from "@/lib/cam
 import OrderStepper from "@/components/OrderStepper";
 import { submitOrderCheckout } from "@/lib/api";
 import KhqrModal from "@/components/KhqrModal";
-import { QRCodeSVG } from "qrcode.react";
+import BakongKhqrCard from "@/components/BakongKhqrCard";
 import { buildBakongKhqr } from "@/lib/khqr";
 
 export default function CheckoutPage() {
@@ -771,10 +771,10 @@ export default function CheckoutPage() {
 
               {/* KHQR Explainer Box */}
               {formData.paymentMethod === "khqr" && (
-                <div className="border border-border bg-paper p-4 space-y-3">
+                <div className="border border-border bg-paper p-4 space-y-4">
                   <div className="flex items-center justify-between border-b border-border pb-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-block bg-ctrl-red text-paper font-bold text-[10px] px-2 py-0.5 rounded-xs font-mono">
+                      <span className="inline-block bg-[#E11E26] text-white font-bold text-[10px] px-2 py-0.5 rounded-xs font-mono">
                         KHQR
                       </span>
                       <span className="text-xs font-semibold text-ink">National Bank of Cambodia Bakong</span>
@@ -784,23 +784,25 @@ export default function CheckoutPage() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <div className="border-2 border-ink bg-white p-2 shrink-0 flex flex-col items-center justify-center shadow-xs">
-                      <QRCodeSVG
-                        value={checkoutKhqrPreview}
-                        size={84}
-                        level="M"
-                        includeMargin={false}
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                    <div className="shrink-0">
+                      <BakongKhqrCard
+                        payload={checkoutKhqrPreview}
+                        size={150}
+                        className="shadow-sm"
                       />
                     </div>
 
-                    <div className="space-y-1 text-xs font-mono text-ink-soft">
-                      <p className="text-ink font-semibold">Instant Scan &amp; Pay</p>
-                      <p className="text-[11px]">
-                        Scan via <strong>ABA Mobile</strong>, <strong>ACLEDA mobile</strong>, <strong>Wing Bank</strong>, or any Bakong-enabled app.
+                    <div className="space-y-2 text-xs font-mono text-ink-soft">
+                      <p className="text-ink font-semibold">Official Bakong KHQR</p>
+                      <p className="text-[11px] leading-relaxed">
+                        Scan instantly via <strong>ABA Mobile</strong>, <strong>Wing Bank</strong>, <strong>ACLEDA mobile</strong>, or any Bakong-enabled banking app.
                       </p>
                       <p className="text-[11px] text-forest font-medium">
-                        ✓ No extra transaction fees
+                        ✓ Zero fees &bull; Instant auto-settlement
+                      </p>
+                      <p className="text-[10px] text-ink-soft/70">
+                        A full payment modal will also pop up upon placing your order.
                       </p>
                     </div>
                   </div>

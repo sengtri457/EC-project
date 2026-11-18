@@ -9,7 +9,7 @@ import { fetchOrderDetail } from "@/lib/api";
 import { downloadInvoice } from "@/lib/downloadInvoice";
 import { toKhr } from "@/lib/cambodiaLocations";
 import OrderStepper from "@/components/OrderStepper";
-import { QRCodeSVG } from "qrcode.react";
+import BakongKhqrCard from "@/components/BakongKhqrCard";
 import { buildBakongKhqr } from "@/lib/khqr";
 
 interface InvoiceClientProps {
@@ -398,12 +398,12 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                 Clothes™ Cambodia &bull; Contact: 012 345 678 &bull; Telegram: @clothescambodia
               </p>
 
-              {/* Official NBC Bakong KHQR QR Code on Invoice */}
+              {/* Official NBC Bakong KHQR Card on Invoice */}
               {order.customer.paymentMethod === "khqr" && (
-                <div className="mt-3 flex items-center gap-3 border border-border bg-canvas/40 p-2.5">
-                  <div className="bg-white p-1 border border-border shrink-0 shadow-xs">
-                    <QRCodeSVG
-                      value={buildBakongKhqr({
+                <div className="mt-4 flex flex-col sm:flex-row items-center sm:items-start gap-3.5 border border-border bg-canvas/40 p-3">
+                  <div className="shrink-0">
+                    <BakongKhqrCard
+                      payload={buildBakongKhqr({
                         accountId: process.env.NEXT_PUBLIC_BAKONG_ACCOUNT_ID || "clothes@abaa",
                         merchantName: process.env.NEXT_PUBLIC_BAKONG_MERCHANT_NAME || "Clothes Apparel Co",
                         merchantCity: "Phnom Penh",
@@ -411,20 +411,22 @@ export default function InvoiceClient({ orderId }: InvoiceClientProps) {
                         currency: "USD",
                         billNumber: order.id,
                       }).qr}
-                      size={72}
-                      level="M"
-                      includeMargin={false}
+                      size={130}
+                      className="shadow-xs"
                     />
                   </div>
-                  <div className="text-[10px] font-mono text-ink-soft leading-tight">
-                    <span className="font-bold text-ink block uppercase text-[10px] text-ctrl-red">
+                  <div className="text-[11px] font-mono text-ink-soft leading-tight space-y-1">
+                    <span className="font-bold text-ink block uppercase text-[11px] text-ctrl-red">
                       Official Bakong KHQR
                     </span>
-                    <span className="block mt-0.5">
+                    <span className="block text-[10px]">
                       National Bank of Cambodia EMVCo Standard
                     </span>
-                    <span className="block text-ink font-semibold mt-1">
+                    <span className="block text-ink font-semibold text-[11px]">
                       Ref: {order.id}
+                    </span>
+                    <span className="block text-forest font-medium text-[10px]">
+                      Scan with ABA, Wing, ACLEDA, or Bakong
                     </span>
                   </div>
                 </div>
